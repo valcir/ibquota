@@ -1,2 +1,2 @@
-# ibquota 3
+# ibquota 3 - Backend CUPS
  Print Accounting Software
