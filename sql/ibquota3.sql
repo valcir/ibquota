@@ -9,6 +9,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `ibquota3`
 --
+CREATE DATABASE IF NOT EXISTS ibquota3;
+USE ibquota3;
 
 -- --------------------------------------------------------
 
