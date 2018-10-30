@@ -1,17 +1,17 @@
 CREDITS - 2018-10-28
 ====================
 
-   Allan Carvalho / UNICAMP  
-   Carlos A N Pereira [2011] 
-   Fabrício F. Prado / UNICAMP [2011] 
-   Alessandro Moraes / UNESP - Bauru [2008] 
-   Carlos Markennedy C . de Lima / II EPSL [2006] 
-   Alex Furtunato [2006] 
-   Marcelo Gigliotti / NUPPEAD [2005]
-   Arlindo Follador Neto [2004] 
-   Washington Lima / ICI-Curitiba [2004] 
-   Henrique Jose Goncalves / IBTA [2003] 
-   Rodrigo Zadra. Armond / CEDEPLAR - UFMG [2003] 
+   Allan Carvalho / UNICAMP   
+   Carlos A N Pereira [2011]    
+   Fabrício F. Prado / UNICAMP [2011]    
+   Alessandro Moraes / UNESP - Bauru [2008]    
+   Carlos Markennedy C . de Lima / II EPSL [2006]    
+   Alex Furtunato [2006]    
+   Marcelo Gigliotti / NUPPEAD [2005]   
+   Arlindo Follador Neto [2004]   
+   Washington Lima / ICI-Curitiba [2004]   
+   Henrique Jose Goncalves / IBTA [2003]   
+   Rodrigo Zadra. Armond / CEDEPLAR - UFMG [2003]   
 
   Coordenador do Projeto: Valcir Cabral / Unicamp
 
