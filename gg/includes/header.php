@@ -26,9 +26,6 @@
       <li class="nav-item active">
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Download</a>
-      </li>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Cadastro
@@ -61,16 +58,6 @@
           <a class="dropdown-item" href="#">Guia Rápido</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#">FAQ - Perguntas Frequentes</a>
-        </div>
-      </li>
-     <li class="nav-item dropdown active">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Links
-        </a>
-        <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="https://br.groups.yahoo.com/neo/groups/ibquota/info">Lista de Discussão</a>
-          <a class="dropdown-item" href="https://www.cups.org">CUPS</a>
-          <a class="dropdown-item" href="https://ibquota.blogspot.com/">Blog com dicas do IBQUOTA</a>
         </div>
       </li>
     </ul>
