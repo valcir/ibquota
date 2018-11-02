@@ -309,6 +309,12 @@ ALTER TABLE `usuarios`
  ADD PRIMARY KEY (`cod_usuario`), ADD UNIQUE KEY `idx_usuarioUnico` (`usuario`);
 
 --
+-- Indexes for table `adm_users`
+--
+ALTER TABLE `adm_users`
+ ADD PRIMARY KEY (`cod_adm_users`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
