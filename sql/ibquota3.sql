@@ -210,6 +210,29 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 --
+-- Estrutura da tabela `adm_users`
+--
+
+CREATE TABLE IF NOT EXISTS `adm_users` (
+`cod_adm_users` int(11) NOT NULL,
+  `nome` varchar(50),
+  `login` varchar(50) NOT NULL,
+  `email` varchar(100),
+  `senha` varchar(60),
+  `permissao` int(11)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `adm_users`
+--
+
+INSERT INTO `adm_users` (`cod_adm_users`, `nome`, `login`, `email`, `senha`,`permissao`) VALUES
+(1, 'Admin IBQUOTA', 'admin', '', '', 0);
+ALTER TABLE `adm_users` ADD PRIMARY KEY (`cod_adm_users`);
+
+
+
+--
 -- Indexes for dumped tables
 --
 
@@ -349,6 +372,14 @@ MODIFY `cod_status_impressao` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCR
 --
 ALTER TABLE `usuarios`
 MODIFY `cod_usuario` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
+
+
+--
+-- AUTO_INCREMENT for table `adm_users`
+--
+ALTER TABLE `adm_users` 
+MODIFY `cod_adm_users` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
