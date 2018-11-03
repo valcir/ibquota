@@ -1,3 +1,14 @@
+<?php
+/**
+ * IBQUOTA 3
+ * GG - Gerenciador Grafico do IBQUOTA
+ * 
+ * 29/10/2018 - Valcir C.
+ *
+ * Cabecalho das paginas. Com o menu.
+ */ 
+?>
+
 <!DOCTYPE html>
 <html lang="pt">
   <head>
@@ -26,41 +37,49 @@
       <li class="nav-item active">
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="configuracao.php">Configuração</a>
+      </li>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Cadastro
+          Cadastros
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
+          <a class="dropdown-item" href="#">Usuario</a>
           <a class="dropdown-item" href="#">Grupo</a>
-          <a class="dropdown-item" href="#">Usuario</a>
           <a class="dropdown-item" href="#">Impressora</a>
-          <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#">Política de Impressão</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Usuário Administrativo</a>
         </div>
       </li>
-      <li class="nav-item dropdown active">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Relatório
-        </a>
-        <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="#">Últimas Impressões</a>
-          <a class="dropdown-item" href="#">Usuario</a>
-          <a class="dropdown-item" href="#">Impressora</a>
-        </div>
-      </li>
-
-
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Documentação
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="#">Guia Rápido</a>
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Documentação Antiga - v2.4</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#">FAQ - Perguntas Frequentes</a>
         </div>
       </li>
     </ul>
+
+    <ul class="navbar-nav navbar-right">
+        <li class="nav-item dropdown active">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Conta
+        </a>
+        <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
+          <a class="dropdown-item" href="trocarsenha.php">Trocar Senha</a>
+          <a class="dropdown-item" href="#">Ajuda</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="includes/logout.php">Sair</a>
+        </div>
+      </li>
+     </ul>
   </div>
 </nav>
+<br><br>
 

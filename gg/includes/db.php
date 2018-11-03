@@ -14,3 +14,9 @@ define("USER", "ibquota");       // Usuário para acessar o banco de dados.
 define("PASSWORD", "ibquota");   // Senha de acesso ao banco de dados. 
 define("DATABASE", "ibquota3");  // O nome do banco de dados. 
 
+
+/**
+* NAO ALTERAR 
+*/ 
+
+$mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);

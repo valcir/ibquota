@@ -3,7 +3,7 @@
  * IBQUOTA 3
  * GG - Gerenciador Grafico do IBQUOTA
  * 
- * 01/11/2018 - Valcir C.
+ * 30/10/2018 - Valcir C.
  *
  * Funcoes definidas para utilizacao no GG
  */  
@@ -14,7 +14,7 @@ include_once 'db.php';
 
 function sec_session_start() {
     $session_name = 'sec_session_id';   
-    $secure = SECURE;    // Impede JavaScript de acessar identificacao da sessao.
+    $secure = false;    // Impede JavaScript de acessar identificacao da sessao.
     $httponly = true;    // Forca sessao usar apenas cookies. 
    if (ini_set('session.use_only_cookies', 1) === FALSE) {
         header("Location: ../error.php?err=Could not initiate a safe session (ini_set)");
@@ -32,13 +32,13 @@ function sec_session_start() {
 }
 
 function login($login, $password, $mysqli) { 
-    if ($stmt = $mysqli->prepare("SELECT cod_adm_users, nome, senha, premissao
+    if ($stmt = $mysqli->prepare("SELECT cod_adm_users, login, senha, permissao
         FROM adm_users
         WHERE login = ? LIMIT 1")) {
         $stmt->bind_param('s', $login);
         $stmt->execute();    
         $stmt->store_result();
-        $stmt->bind_result($user_id, $nome, $db_password, $premissao );
+        $stmt->bind_result($user_id, $nome, $db_password, $permissao );
         $stmt->fetch();
  
         if ($stmt->num_rows == 0) {
@@ -58,7 +58,7 @@ function login($login, $password, $mysqli) {
             $nome = preg_replace("/[^a-zA-Z0-9_\-]+/","",$nome);
             $_SESSION['username'] = $nome;
             $_SESSION['login_string'] = hash('sha256', $password . $user_browser);
-            $_SESSION['premissao'] = $premissao;
+            $_SESSION['permissao'] = $permissao;
 
             // Login concluído com sucesso.
             return true;
@@ -105,4 +105,34 @@ function login_check($mysqli) {
     } 
     // Não foi logado 
     return false;
+}
+
+function esc_url($url) {
+// limpa o resultado da variável de servidor PHP_SELF 
+    if ('' == $url) {
+        return $url;
+    }
+ 
+    $url = preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\\x80-\\xff]|i', '', $url);
+ 
+    $strip = array('%0d', '%0a', '%0D', '%0A');
+    $url = (string) $url;
+ 
+    $count = 1;
+    while ($count) {
+        $url = str_replace($strip, '', $url, $count);
+    }
+ 
+    $url = str_replace(';//', '://', $url);
+ 
+    $url = htmlentities($url);
+ 
+    $url = str_replace('&amp;', '&#038;', $url);
+    $url = str_replace("'", '&#039;', $url);
+ 
+    if ($url[0] !== '/') {
+        return '';
+    } else {
+        return $url;
+    }
 }

@@ -1,7 +1,9 @@
 CREDITS - 2018-10-28
 ====================
 
+
    Allan Carvalho / UNICAMP   
+   Valerio Savio Ribeiro / USP    
    Carlos A N Pereira [2011]    
    Fabrício F. Prado / UNICAMP [2011]    
    Alessandro Moraes / UNESP - Bauru [2008]    
