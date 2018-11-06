@@ -7,6 +7,14 @@
  *
  * Cabecalho das paginas. Com o menu.
  */ 
+
+if (file_exists("css")) {
+  $path_raiz = "";
+} else {
+  $path_raiz = "../";
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +23,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="<?php echo $path_raiz;?>css/bootstrap.min.css" type="text/css" />
         
     <link rel="icon" href="/favicon.png" />
     <meta name="description" content="Controle de Quota de Impressão">
@@ -46,7 +54,7 @@
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
           <a class="dropdown-item" href="#">Usuario</a>
-          <a class="dropdown-item" href="#">Grupo</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>grupos/">Grupo</a>
           <a class="dropdown-item" href="#">Impressora</a>
           <a class="dropdown-item" href="#">Política de Impressão</a>
           <div class="dropdown-divider"></div>
@@ -72,7 +80,7 @@
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Conta
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="trocarsenha.php">Trocar Senha</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>trocarsenha.php">Trocar Senha</a>
           <a class="dropdown-item" href="#">Ajuda</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="includes/logout.php">Sair</a>

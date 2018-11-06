@@ -11,6 +11,9 @@
 
 include_once 'db.php';
 
+/** Quantidades de registro por pagina - PAGINACAO **/
+define('QTDE_POR_PAGINA', 10);
+
 
 function sec_session_start() {
     $session_name = 'sec_session_id';   
@@ -136,3 +139,89 @@ function esc_url($url) {
         return $url;
     }
 }
+
+
+function barra_de_paginas($p,$p_registros) {
+    # Mostra barra de navegacao de Paginas
+    //Sera que o usuario foi safado?
+    if ($p < 1) $p=1;
+    $p_total = ceil($p_registros/QTDE_POR_PAGINA);
+    //Sera que o usuario foi safado?
+    if ($p > $p_total) $p=$p_total;
+    $p_anterior = (($p -1) <= 0) ? 1: $p-1;
+    $p_posterior = (($p +1) >= $p_total) ? $p_total : $p+1;
+    if ($p_posterior == 0) $p_posterior = 1;
+    
+    echo "<center><nav aria-label=\"...\">";
+    echo " <ul class=\"pagination pagination-sm\">";
+
+    //Tem mais de 10 registros?
+    $inicio_desabilitado="";
+    if ($p <= 1){
+        $inicio_desabilitado = "class=\"page-item disabled\"";
+    } else {
+        $inicio_desabilitado = "class=\"page-item\"";
+    }
+
+    //Final?
+    $fim_desabilitado="";
+    if ($p_total <= $p){
+        $fim_desabilitado = "class=\"page-item disabled\"";
+    } else {
+        $fim_desabilitado = "class=\"page-item\"";
+    }
+
+    $urlbarra = $_SERVER["PHP_SELF"] . "?";
+    if ($urlbarra <> $_SERVER["REQUEST_URI"]) {
+      if (isset($_GET['cod_usuario'])) $urlbarra .= "cod_usuario=" . $_GET['cod_usuario'] ."&";
+      if (isset($_GET['cod_grupo'])) $urlbarra .= "cod_grupo=" . $_GET['cod_grupo'] ."&";
+      if (isset($_GET['q'])) $urlbarra .= "q=" . $_GET['q'] ."&";
+    }
+
+
+    echo "<li " .$inicio_desabilitado. "><a class=\"page-link\" href=\"". $urlbarra . "p=1\" aria-label=\"Previous\">&laquo;</a></li>\n";
+    echo "<li " .$inicio_desabilitado. "><a class=\"page-link\" href=\"". $urlbarra. "p=" .$p_anterior. "\" aria-label=\"Previous\">&laquo;</a></li>\n";
+      
+    // Botao "..." inicial
+    if ($p > 3) {
+        echo "<li class=\"page-item\"><a class=\"page-link\" href=\"". $urlbarra ."p=" . ($p - 3) ."\">...</a></li>\n";
+    }
+
+    //botoes numerados
+    if ($p < 4) {
+        $p_botao_inicial = 1;
+    } elseif (($p > 3) and ($p == $p_total)) {
+        $p_botao_inicial = $p -4;
+    } elseif (($p > 3) and ($p == ($p_total -1))) {
+        $p_botao_inicial = $p -3;
+    } elseif (($p > 3) and ($p < ($p_total -1))) {
+        $p_botao_inicial = $p -2;
+    }
+        
+    for ($i=$p_botao_inicial; $i < ($p_botao_inicial + 5); $i++) { 
+        # code...
+        if ($i <= $p_total) {
+            echo "<li class=\"page-item ";
+            if ($p == $i) echo " active";
+            echo "\"><a class=\"page-link\" href=\"". $urlbarra . "p=" . $i ."\">$i ";
+            
+            echo "</a></li>\n";
+        }
+    }
+
+    // Botao "..." final
+    if (($p_total > 5) AND ($p_total - 2) > $p) {
+        echo "<li  class=\"page-item\"><a class=\"page-link\" href=\"". $urlbarra ."p=";
+        if ($p < 4) {
+            echo "6";
+        } else {
+            echo ($p + 3);
+        } 
+        echo "\">...</a></li>\n";
+    }
+    
+    echo " <li " .$fim_desabilitado. "><a class=\"page-link\" href=\"". $urlbarra ."p=" .$p_posterior. "\" aria-label=\"Next\">&raquo;</a></li>\n"; 
+    echo " <li " .$fim_desabilitado. "><a class=\"page-link\" href=\"". $urlbarra ."p=" .$p_total. "\" aria-label=\"Next\">&raquo;</a></li>\n";
+    echo "  </ul>\n </nav>\n</center>";
+}
+
