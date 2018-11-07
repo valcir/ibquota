@@ -46,19 +46,19 @@ if (file_exists("css")) {
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="configuracao.php">Configuração</a>
+        <a class="nav-link" href="<?php echo $path_raiz;?>configuracao.php">Configuração</a>
       </li>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Cadastros
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="#">Usuario</a>
-          <a class="dropdown-item" href="<?php echo $path_raiz;?>grupos/">Grupo</a>
+          <a class="dropdown-item" href="#">Usuarios</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>grupos/">Grupos</a>
           <a class="dropdown-item" href="#">Impressora</a>
           <a class="dropdown-item" href="#">Política de Impressão</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Usuário Administrativo</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>adm_users/">Usuário Administrativo</a>
         </div>
       </li>
       <li class="nav-item dropdown active">
@@ -83,7 +83,7 @@ if (file_exists("css")) {
           <a class="dropdown-item" href="<?php echo $path_raiz;?>trocarsenha.php">Trocar Senha</a>
           <a class="dropdown-item" href="#">Ajuda</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="includes/logout.php">Sair</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>includes/logout.php">Sair</a>
         </div>
       </li>
      </ul>
