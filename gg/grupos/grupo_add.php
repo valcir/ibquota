@@ -99,7 +99,7 @@ if ($insert_stmt = $mysqli->prepare("INSERT INTO grupos (cod_grupo, grupo)
     if (! $insert_stmt->execute()) {
       header('Location: error.php?err=Registration failure: INSERT GRUPOS');
     }
-    echo "<div class=\"alert alert-danger\" role=\"alert\">Grupo <em>". $grupo ."</em> Cadastrado com Sucesso.</div><br><br><center>";
+    echo "<div class=\"alert alert-success\" role=\"alert\">Grupo <em>". $grupo ."</em> Cadastrado com Sucesso.</div><br><br><center>";
     echo "<a class=\"btn btn-primary\" href=\"index.php\" role=\"button\" aria-expanded=\"false\">Voltar</a>&nbsp;&nbsp;";
     echo "<a class=\"btn btn-primary\" href=\"grupo_add.php\" role=\"button\" aria-expanded=\"false\">Novo Grupo</a>";
     echo "</center><br>";
