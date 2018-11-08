@@ -53,7 +53,7 @@ if (file_exists("css")) {
           Cadastros
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="#">Usuarios</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>usuarios/">Usuarios</a>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>grupos/">Grupos</a>
           <a class="dropdown-item" href="#">Impressora</a>
           <a class="dropdown-item" href="#">Política de Impressão</a>
