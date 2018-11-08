@@ -1,0 +1,637 @@
+#!/usr/bin/perl -w
+# IBQUOTA 3 - BACKEND CUPS
+# Versao: 28/Out/18
+#
+# => Necessario REINICIAR o CUPS apos alterar este arquivo
+# => Restart CUPS after change this file
+#
+# JUN 2018 - Valcir Cabral
+# IB/UNICAMP
+
+# Variables
+# => Edit the following to suit your needs:
+
+# MySQL server: You have to create the corresponding
+# account, database and import tables (ibquota3.sql)
+my $DBhost="localhost";
+my $DBlogin="ibquota";
+my $DBpassword="ibquota";
+my $DBdatabase="ibquota3";
+my $DBport=3306;
+
+# Location of the python and pkpgcounter binaries
+# See table config_geral in Database
+#my $path_pkpgcounter="/usr/bin/pkpgcounter";
+#my $path_python="/usr/bin/python";
+
+## Log Level: See table config_geral in Database
+# 0: To disable. Use this if not have Syslog module installed.
+# 1: Default. Basic log.
+# 2: For Developers.
+
+##
+## /!\ NAO EDIT AS LINHAS ABAIXO !!! /!\
+## /!\ NOTHING TO EDIT UNDER THIS LINE !!! /!\
+##
+
+use strict;
+#use POSIX qw(strftime); (use this???????)
+use File::Basename;
+use File::Copy;
+use Sys::Hostname;
+use DBD::mysql; 
+
+# Data Bases Connect
+my $dsn = "DBI:mysql:database=$DBdatabase;host=$DBhost;port=$DBport";
+my $DB = DBI->connect($dsn, $DBlogin, $DBpassword);
+# or log_failure ("  Couldn't connect to the MySQL server !");;
+
+
+##
+## READING CONFIG FROM DATABASE
+##
+my $sql = "SELECT base_local, LDAP_server, LDAP_port, LDAP_filter, LDAP_base,
+                  LDAP_user, LDAP_password, path_pkpgcounter, path_python, Debug
+                  FROM config_geral";
+my $sth = $DB->prepare($sql);
+
+# execute the query
+$sth->execute();
+my @row = $sth->fetchrow_array();
+my $Base_Local = $row[0];
+my $LDAP_Server = $row[1];
+my $LDAP_Port = $row[2];
+my $LDAP_Filter = $row[3];
+my $LDAP_Base = $row[4];
+my $LDAP_User = $row[5];
+my $LDAP_Password = $row[6];
+my $path_pkpgcounter = $row[7];
+my $path_python = $row[8];
+my $DEBUG = $row[9];
+$sth->finish();
+
+
+my $query="INSERT INTO log_ibquota (mensagem, datahora)";
+$query.=" VALUES ('IBQUOTA started.', now() )";
+$DB->do($query) or do{
+      # If the query fails, log it, and set the failure flag.
+      #$count_failure = 1;
+
+      #log_debug("  Query : $query");
+      #log_debug("  MySQL error : ".$DB->errstr);
+      #log_debug(@sqlArgs);
+};
+
+
+# Backend-related variables: Should not be changed if working !
+my $backends_dir = dirname($0);
+my $me = basename($0);
+
+##
+## Variables
+##
+my $job_id;
+my $user;
+my $title;
+my $options;
+my $mycopies = 1; # Number of Copies
+my $printer;
+my $pages;
+my $cod_politica = 0;
+my $quota_padrao = 0;
+my $grupo = "";
+my $quota_infinita = 0;
+my $hostname = "unknown";
+my $quota_user = 0;
+
+##
+## Function's
+##
+
+#
+# Log to file
+#
+my $name_log_file = "/tmp/ibquota3.log";
+sub log_in_file {
+   my $mensagem = shift;
+   open(my $fh, '>>', $name_log_file);
+   print $fh "$mensagem \n";
+   close $fh;
+}
+
+#TIRAR
+log_in_file ("IBQUOTA STARTED!");
+
+#
+# Log
+#
+if ( $DEBUG == 1 || $DEBUG == 2 ) {
+   my $Syslog_installed = do {
+      eval {
+      require Sys::Syslog;
+      import Sys::Syslog qw(syslog openlog closelog);
+      };
+      $@ ? 0 : 1;
+   };
+   if ( $Syslog_installed ) {
+      # Init the logging system: name backend, PID
+      openlog ($me, 'pid');
+      log_in_file("Syslog Instalado");
+   } else {
+      # Sys::Syslog is needed but not present: Tell the
+      # admin and exit !
+      log_in_file("ERROR: $me: FATAL: The 'Sys::Syslog' perl module is not installed !\n");
+      die ("ERROR: $me: FATAL: The 'Sys::Syslog' perl module is not installed !\n Please install it or set \$Log_Level_IBQUOTA = 0 in the $backends_dir/$me perl script.")
+   }
+} else {
+   # Log_Level_IBQUOTA = 0 (Log disable)
+}
+
+#
+# log_ibquota(msg);
+#
+sub log_ibquota {
+   my ($priority,$mensagem) = @_;
+   syslog($priority,$mensagem);
+}
+
+#
+# log_ibquota_info(msg);
+#
+sub log_ibquota_info {
+   my $mensagem = shift;
+   if ( $DEBUG > 0 ) {
+      log_ibquota('info',$mensagem);
+   }
+}
+
+#
+# log_ibquota_debug(msg);
+#
+sub log_ibquota_debug {
+   my $mensagem = shift;
+   if ( $DEBUG > 1 ) {
+      log_ibquota('debug',$mensagem);
+   }
+}
+
+
+#
+# User_in_groups: Verify if user in group. DataBase LOCAL or LDAP
+#
+sub User_in_groups {
+   my ($user,$grupo) = @_;
+
+   log_ibquota_debug("Checking User_in_groups");
+
+   # Database LDAP?
+   if ( $Base_Local == 0 ) {
+      #LDAP
+      my $ldap = Net::LDAP->new( $LDAP_Server ) or die "$@";
+      my $mesg;
+      my $error_ldap = 0;
+      if ( $LDAP_User == "" ) {
+         $mesg = $ldap->bind ;    # an anonymous bind
+      } else {
+         $mesg = $ldap->bind($LDAP_User,$LDAP_Password);
+      }
+       
+      $mesg = $ldap->search( # perform a search
+                       base   => $LDAP_Base,
+                       filter => $LDAP_Filter
+                     );
+      if ( $mesg->code != 0 ) {
+         $error_ldap = $mesg->code;
+         log_ibquota_info("LDAP ERROR User: ". $error_ldap);
+         return 0;
+      }
+   
+      if ( $mesg->count < 1 ){
+         return 0; 
+      }
+      my $entry = $mesg->entry(0);
+      my $dn = $entry->dn; 
+
+      # Windows AD (group) or LDAP server (groupsOfNames)
+      my $ldap_filter = "(&(cn=$grupo)(|(memberof='$dn')(member='$dn'))(|(objectClass=group)(objectClass=groupOfNames)))";
+      # objectCategory=group (AD) - TESTAR!!!!!
+      $mesg = $ldap->search( # perform a search
+                       base   => $LDAP_Base,
+                       filter => $ldap_filter
+                     );
+      if ( $mesg->code != 0 ) {
+         $error_ldap = $mesg->code;
+         log_ibquota_info("LDAP ERROR Group: ". $error_ldap);
+         return 0;
+      }
+      # User in Group?
+      if ( $mesg->count > 0 ){
+         return 1;
+      }
+
+      # LDAP server (PosixGroup)
+      $ldap_filter = "(&(cn=$grupo)(objectClass=PosixGroup)(memberUid=$user))";
+      $mesg = $ldap->search( # perform a search
+                      base   => $LDAP_Base,
+                      filter => $ldap_filter
+                     );
+      if ( $mesg->code != 0 ) {
+         $error_ldap = $mesg->code;
+         log_ibquota_info("LDAP ERROR Group: ". $error_ldap);
+         return 0;
+      }
+      # User in Group?
+      if ($mesg->count > 0){
+         return 1;
+      }
+      return 0;
+   } else {
+      # DB LOCAL
+
+
+      my $sql = "SELECT cod_usuario FROM usuarios WHERE usuario='". $user ."'";
+      my $sth = $DB->prepare($sql);
+      $sth->execute();
+      my @row = $sth->fetchrow_array();
+      my $cod_usuario = $row[0];
+
+      $sql = "SELECT cod_grupo FROM grupos WHERE grupo='". $grupo ."'";
+      $sth = $DB->prepare($sql);
+      $sth->execute();
+      @row = $sth->fetchrow_array();
+      my $cod_grupo = $row[0];
+
+      log_ibquota_debug("Cod Usuario = ". $cod_usuario . "Cod Grupo = ". $cod_grupo);
+
+      $sql = "SELECT COUNT(cod_grupo_usuario) FROM grupo_usuario WHERE cod_grupo=". $cod_grupo ." and ";
+      $sql .= " cod_usuario=". $cod_usuario;
+      $sth = $DB->prepare($sql);
+      $sth->execute();
+      @row = $sth->fetchrow_array();
+
+      log_ibquota_debug("Usuario no grupo row: ". $row[0]);
+
+      if ( $row[0] > 0 ) {
+         log_ibquota_debug("User ". $user ." in Group ". $grupo .".");
+         $sth->finish;
+         return 1;
+      }
+      $sth->finish;
+   }
+   log_ibquota_debug("User ". $user ." NOT in Group ". $grupo .".");
+   return 0;
+}
+
+#
+# Log_printing: Register job print
+#
+sub Log_printing {
+   my $cod_status_impressao=shift;
+   # 1 = "OK - Impresso com sucesso"
+   # 2 = "Usuário não cadastrado"
+   # 3 = "Usuário sem quota"
+   # 4 = "Arquivo temporário de impressão não encontrado"
+   # 5 = "Reservado"
+   # 6 = "Reservado"
+   # 7 = "Não foi possível determinar quantidade de páginas"
+   # 8 = "Usuario com Quota insuficiente"
+   # 9 = "Nao ha politica de impressao para esta impressora"
+
+   my $query="INSERT INTO impressoes (data_impressao,hora_impressao, job_id, impressora, usuario,";
+   $query.="estacao, nome_documento, paginas, cod_politica, cod_status_impressao)";
+   $query.=" VALUES (NOW(),NOW(),". $job_id .",'". $printer ."','". $user ."','". $hostname ."','";
+   $query.= "". $title ."',". $pages .",". $cod_politica .",". $cod_status_impressao .")";
+   $DB->do($query);
+
+   log_ibquota_debug("SQL: ". $query);
+}
+
+#
+# count_pages: Page counter 
+#
+sub count_pages {
+   my $doc=shift;
+   my $num_pages = 1;
+   if ( ! -e $doc ) {
+      log_ibquota_info("File Job not found: $doc");
+   }
+
+   # Pykote counter
+   my $count_failure=0;
+
+   # pkpgcounter exist?
+   if ( ! -e $path_pkpgcounter ) {
+      log_ibquota_info("Pykota counter not found: Check that you installed $path_pkpgcounter");
+      $count_failure = 1;
+   }
+
+  ## Was this really useful ?
+  #if ( ! -x $path_pkpgcounter){
+  #  log_failure ("  Analyzer is not executable: Check that you've chmod'ed +x $path_pkpgcounter");
+  #  $count_failure = 1;
+  #}
+
+   # Python exist?
+   if ( ! -e $path_python ) {
+      log_ibquota_info("Python not found: Check that you installed $path_python");
+      $count_failure = 1;
+   }
+
+   # Python executable?
+   if ( ! -x $path_python ) {
+      log_ibquota_info("Python is not executable: Check that you've chmod'ed +x $path_python");
+      $count_failure = 1;
+   }
+
+   # This command will analyze our print job.
+   my $analyse_command="$path_python $path_pkpgcounter $doc";
+
+   # Launch the command !
+   my $total_pages=qx{$analyse_command 2> /dev/null};
+
+   # Check return code.
+   my $rcode = $?;
+   my $crcode = $rcode >> 8;
+
+   if ( $rcode == 0 ) {
+      # This contains the actual return value of the child process:
+      log_ibquota_debug("Analyzer returned: " . $crcode);
+      log_ibquota_debug("Analyzing successful !") unless ($crcode != 0);
+      log_ibquota_debug("Number of pages: $total_pages");
+   } else {
+      # We weren't able to analyze the document...
+      log_ibquota_debug("Analyzer returned: " . $crcode);
+      log_ibquota_debug("Analyzer caught signal ?: ". ($rcode & 127));
+      log_ibquota_debug("Analyzer core dumped ? : ". ($rcode & 128));
+      log_ibquota_info("Couldn't analyze the document; Return code: ".$rcode);
+
+      # Inform the rest of the script that cointing failed. For example,
+      # this will prevent deletion of the temp file to enable future
+      # investigations.
+      $count_failure = 1;
+   }
+   if ( $count_failure == 1 ) {
+      log_ibquota_info("Contador de paginas do Pykota com erro.");
+      Log_printing(7);
+      exit 5;
+   } else {
+      return $total_pages;
+   }
+
+   return $num_pages;
+}
+
+
+sub Quota_user {
+   my ($cod_politica,$user,$grupo,$quota_padrao) = @_;
+
+   my $sql_quota = "SELECT quota FROM quota_usuario ";
+      $sql_quota .= " WHERE usuario='". $user ."' and grupo = '". $grupo . "' and ";
+      $sql_quota .= " cod_politica = ". $cod_politica;
+
+   log_ibquota_debug("Sera que o usuario ". $user ." tem quota? ". $sql_quota);
+
+   my $sth = $DB->prepare($sql_quota);
+   $sth->execute();
+
+   while ( my @row = $sth->fetchrow_array() ) {
+      $sth->finish;
+      log_ibquota_debug("Usuario ". $user ." quota = ". $row[0]);
+      return 0 + $row[0];
+   }
+
+   $sth->finish;
+   log_ibquota_debug("Usuario ". $user ." quota padrao = ". $quota_padrao);
+   return $quota_padrao;
+}
+
+sub Decrease_quota {
+   my ($cod_politica,$user,$grupo,$pages,$quota_padrao) = @_;
+
+   ## Verifica se tem registro, se tiver altera senão insere
+   my $sql_quota = "SELECT quota FROM quota_usuario ";
+      $sql_quota .= " WHERE usuario='". $user ."' and grupo = '". $grupo . "' and ";
+      $sql_quota .= " cod_politica = ". $cod_politica;
+   my $sth_quota = $DB->prepare($sql_quota);
+   $sth_quota->execute();
+
+   log_ibquota_debug("Decrease_quota Select: ". $sql_quota);
+
+   while ( my @row_quota = $sth_quota->fetchrow_array() ) {
+      # Registro ja existe, atualizar
+      $sql_quota = "UPDATE quota_usuario SET quota = quota - ". $pages;
+      $sql_quota .= " WHERE usuario='". $user ."' and grupo = '". $grupo . "' and cod_politica = ". $cod_politica;
+      log_ibquota_debug("UPDATE user quota: ". $sql_quota);
+      $sth_quota = $DB->prepare($sql_quota);
+      # execute the query
+      $sth_quota->execute();
+      $sth_quota->finish;
+      return;
+   }
+
+   # Inserir registro
+   $sql_quota = "INSERT INTO quota_usuario (cod_politica, usuario, quota, grupo) ";
+   $sql_quota .= " VALUES (". $cod_politica .",'". $user ."',". (0 + $quota_padrao - $pages) .",'". $grupo ."')";
+   log_ibquota_debug("INSERT user quota: ". $sql_quota);
+
+   $sth_quota = $DB->prepare($sql_quota);
+   # execute the query
+   $sth_quota->execute();
+   $sth_quota->finish;
+   return;
+}
+
+##
+##  Begin Script
+##
+
+if ( @ARGV == 0 ){
+   #log_failure ("Cups backend called without argument!");
+   log_in_file ("Cups backend called without argument!");
+   exit 5;
+}
+
+
+##
+## Check arguments and environment
+## Usage: $0 job-id user title copies options [file]
+##
+## CUPS API says there must be an exact number of args (5 or 6)
+if ( @ARGV < 4 || @ARGV > 6 ) {
+   #log_failure ("Cups backend called with irregular number of arguments!");
+   log_in_file ("Cups backend called with irregular number of arguments!");
+   exit 5;
+}
+
+my $spoolfile = "";
+my $str_argvs = "  ARGV[0] = ". $ARGV[0] ."\n  ARGV[1] = ". $ARGV[1] ."\n  ARGV[2] = ". $ARGV[2];
+$str_argvs .= "  ARGV[3] = ". $ARGV[3] ."\n  ARGV[4] = ". $ARGV[4] ."\n  ARGV[5] = ". $ARGV[5];
+$str_argvs .= "  ARGV[6] = ". $ARGV[6];
+
+log_ibquota_debug("" . $str_argvs);
+
+## if we have the processed print file on standard in then copies have already been made
+## otherwise we have to handle it from the args passed to us by cupsd
+if ( @ARGV == 6 ) {
+   $spoolfile = $ARGV[5];
+   chomp $spoolfile;
+   # chomp $spoolfile;
+   # Temp file exist?
+   log_ibquota_debug("Called with 6 args, \$spoolfile is read from STDIN and the tempfile is $spoolfile");
+   if (! -e $spoolfile) {
+      log_ibquota_info("File $spoolfile not found!");
+      exit 5;
+   }
+}
+if ( @ARGV == 5 ) {
+   # Discover spoolfile
+   ### FALTA MONTAR
+       # $ENV{CUPS_DATADIR}
+
+   my $tmpcmd = "/bin/mktemp </dev/null /tmp/print.XXXXXX";
+   my $tmpfile = qx{$tmpcmd};
+   chomp $tmpfile;
+   # TODO : This is not portable too !
+   qx{cat > $tmpfile};
+   $spoolfile = $tmpfile;
+
+
+   #my $path_job = substr $ENV{TMPDIR}, 0, ((length $ENV{TMPDIR}) - 3);
+   #   $path_job .= sprintf 'd%05d-001', $ARGV[0];
+   #log_ibquota_debug("Arq job= ". $path_job);
+   # $spoolfile = $path_job;
+
+   log_ibquota_debug("Called with 5 args, \$spoolfile is $spoolfile");
+   if ( ! -e $spoolfile ) {
+      log_ibquota_info("File $spoolfile not found!");
+      exit 5;
+   }
+}
+
+$job_id = $ARGV[0];
+
+#TIRAR
+log_in_file ("Job $job_id chegou");
+
+$user = $ARGV[1];
+# chomp $user;
+# Set title and remove special characters
+$title = $ARGV[2];
+$title=~ s/'/\\'/g;
+# Copies count
+$mycopies = $ARGV[3];
+if ( $mycopies < 1 ) {
+   $mycopies = 1;
+}
+$options = $ARGV[4];
+
+# Printer name
+$printer = $ENV{PRINTER};
+
+
+# Hostname or IP client IPP
+my $sub_str = "job-originating-host-name"; # 25 chars
+my $position_str_host = index( $options, $sub_str );
+if ( $position_str_host != -1 ) {
+   my $str_host_len = substr $options, ( $position_str_host + 25 ), 1;
+   $hostname = substr $options, ( $position_str_host + 26 ), ord( $str_host_len );
+   # Sorry, the function 'ord' Dont work:
+   my @array_strings = split ' ',  $hostname;
+   $hostname = $array_strings[0];
+}
+
+
+log_ibquota_info("New job[". $job_id ."] from ". $hostname ." to printer: ". $printer .". User is ". $user .".");
+
+
+# FALTA
+# $ENV{CONTENT_TYPE} = Formato do arquivo (EX "application/postscript" )
+
+
+#
+# Page job counting
+#
+$pages = count_pages($spoolfile);
+
+
+#
+# Searching Print Polices
+#
+
+$sql = "SELECT politica_impressora.cod_politica,";
+$sql .= " politicas.quota_padrao, politicas.quota_infinita ";
+$sql .= " FROM politica_impressora, politicas ";
+$sql .= " WHERE politica_impressora.impressora='". $printer ."' AND ";
+$sql .= " politicas.cod_politica= politica_impressora.cod_politica";
+$sth = $DB->prepare($sql);
+
+# execute the query
+$sth->execute();
+
+log_ibquota_info("Numero de rows: ". $sth->rows);
+
+# Printer without Print Police
+if ( $sth->rows < 1 ) {
+   log_in_file ("Printer without Print Police: ". $printer);
+   Log_printing(9);
+   exit 5;
+}
+
+while (my @row = $sth->fetchrow_array()) {
+   $cod_politica = $row[0];
+   $quota_padrao = $row[1];
+   $quota_infinita = $row[2];
+
+   log_ibquota_debug("Analisando: Politica: ". $cod_politica ." Quota_padrao: ". $quota_padrao);
+
+   #
+   # Searching Groups in Police
+   #
+   my $sql_groups = "SELECT grupo FROM politica_grupo ";
+      $sql_groups .= " WHERE cod_politica=". $cod_politica;
+   my $sth_groups = $DB->prepare($sql_groups);
+
+   # execute the query
+   $sth_groups->execute();
+   while (my @row_groups = $sth_groups->fetchrow_array()) {
+      $grupo = $row_groups[0];
+
+      log_ibquota_debug("Analisando: Politica: ". $cod_politica ." Grupo: ". $grupo);
+
+      if ( User_in_groups($user,$grupo) == 1 ) {
+         if ( $quota_infinita == 0 ) {
+            $quota_user = Quota_user($cod_politica,$user,$grupo,$quota_padrao);
+         }
+         if ( ($quota_user >= $pages) || ($quota_infinita == 1) ) {
+            if ( $quota_infinita == 0 ) {
+               log_ibquota_debug("Usuario: ". $user ." tem quota: ". $quota_user);
+               Decrease_quota($cod_politica,$user,$grupo,$pages,$quota_padrao);
+            }
+            Log_printing(1);
+            exit 0;
+         }
+         if ( ($quota_user < $pages) && ($quota_infinita == 0) ) {
+            # User doesnt have QUOTA
+            Log_printing(2);
+            exit 5;
+         }
+      }
+   }
+   $sth_groups->finish();
+}
+
+#
+Log_printing(3);
+$sth->finish();
+exit 5;
+
+
+
+#CUPS_BACKEND_OK=0
+#CUPS_BACKEND_FAILED=1
+#CUPS_BACKEND_AUTH_REQUIRED=2  # cups will rewrite printers.conf with auth. data
+#CUPS_BACKEND_HOLD=3
+#CUPS_BACKEND_STOP=4
+#CUPS_BACKEND_CANCEL=5  # could be bad options
+#CUPS_BACKEND_RETRY=6
+#CUPS_BACKEND_RETRY_CURRENT=7
