@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `adm_users` (
   `nome` varchar(50),
   `login` varchar(50) NOT NULL,
   `email` varchar(100),
-  `senha` varchar(60),
+  `senha` varchar(64),
   `permissao` int(11)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
