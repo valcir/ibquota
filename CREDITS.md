@@ -1,7 +1,11 @@
 CREDITS - 2018-10-28
 ====================
+VERSION 3X:   
 
+  Coordenador do Projeto: Valcir Cabral / Unicamp   
+ 
 
+VERSION 2X:   
    Allan Carvalho / UNICAMP   
    Valerio Savio Ribeiro / USP    
    Carlos A N Pereira [2011]    
