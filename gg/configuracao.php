@@ -143,7 +143,7 @@ if (isset($_POST['path_pkpgcounter']) or isset($_POST['path_python'])
 
              <div class="form-group row">
                   <label class="form-group col-form-label-lg">Senha LDAP:&nbsp;&nbsp;</label>
-                  <input type="text" class="form-control" name="ldap_senha" value="<?php echo $ldap_senha; ?>">
+                  <input type="password" class="form-control" name="ldap_senha" value="<?php echo $ldap_senha; ?>">
              </div>
 
              <div class="form-group row">
