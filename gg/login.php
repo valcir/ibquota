@@ -10,6 +10,11 @@
 include_once 'includes/db.php';
 include_once 'includes/functions.php';
 
+if (primeiro_acesso($mysqli) == true) {
+    header("Location: primeiro_acesso.php");
+    exit();
+}
+
 sec_session_start();
  
 if (login_check($mysqli) == true) {
