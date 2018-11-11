@@ -225,3 +225,19 @@ function barra_de_paginas($p,$p_registros) {
     echo "  </ul>\n </nav>\n</center>";
 }
 
+function primeiro_acesso($mysqli) {
+    if ($stmt = $mysqli->prepare("SELECT senha 
+                                  FROM adm_users 
+                                  WHERE login = 'admin' LIMIT 1")) {
+        $stmt->execute(); 
+        $stmt->bind_result($password);
+        $stmt->fetch();
+
+        if (strlen($password) < 1) {
+            // Senha em branco
+            return true;
+        } 
+        return false;
+    } 
+    return false;
+}
