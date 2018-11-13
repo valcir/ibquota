@@ -63,11 +63,20 @@ if (file_exists("css")) {
       </li>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Relatórios
+        </a>
+        <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/impressoes.php">Impressoes</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/impressoes_com_erro.php">Impressoes com erro</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>relarios/grupos.php">Grupos</a>
+        </div>
+      </li>      
+      <li class="nav-item dropdown active">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Documentação
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Documentação Antiga - v2.4</a>
+          <a class="dropdown-item" href="#">Documentacao</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#">FAQ - Perguntas Frequentes</a>
         </div>

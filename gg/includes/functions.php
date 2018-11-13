@@ -241,3 +241,19 @@ function primeiro_acesso($mysqli) {
     } 
     return false;
 }
+
+
+function status_impressao($mysqli,$cod_status_impressao) {
+    if ($stmt = $mysqli->prepare("SELECT nome_status 
+                                  FROM status_impressao 
+                                  WHERE cod_status_impressao = ? LIMIT 1")) {
+        $stmt->bind_param('i', $cod_status_impressao);
+        $stmt->execute(); 
+        $stmt->bind_result($nome_status);
+        $stmt->fetch();
+        if (strlen($nome_status) < 1) {
+            return "NONE";
+        } 
+    } 
+    return $nome_status;
+}
