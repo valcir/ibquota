@@ -68,7 +68,9 @@ if (file_exists("css")) {
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
           <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/impressoes.php">Impressoes</a>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/impressoes_com_erro.php">Impressoes com erro</a>
-          <a class="dropdown-item" href="<?php echo $path_raiz;?>relarios/grupos.php">Grupos</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/grupos.php">Grupos</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/ibquota_logs.php">Erros Backend</a>
         </div>
       </li>      
       <li class="nav-item dropdown active">
