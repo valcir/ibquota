@@ -82,8 +82,8 @@ if ($stmt = $mysqli->prepare("SELECT data_impressao,hora_impressao,job_id,impres
       } else {
          echo "<tr class=\"bg-danger\">";
       }
-      echo "<td>" . $job_id ."</td>";
-      echo "<td><b>$usuario</b></td>";
+      echo "<td><span title=\" ". $hora_impressao ." ". $data_impressao ."\">$job_id</span></td>"; 
+      echo "<td><span title=\" ". $hora_impressao ." ". $data_impressao ."\"><b>$usuario</b></span></td>";
       echo "<td>$impressora</td>";
       echo "<td>$estacao</td>";
       echo "<td>$nome_documento</td>";

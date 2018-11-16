@@ -53,17 +53,17 @@ if (file_exists("css")) {
           Cadastros
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="<?php echo $path_raiz;?>usuarios/">Usuarios</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>usuarios/">Usu&aacute;rios</a>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>grupos/">Grupos</a>
           <a class="dropdown-item" href="#">Impressora</a>
-          <a class="dropdown-item" href="#">Política de Impressão</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>politicas/">Pol&iacute;tica de Impressão</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="<?php echo $path_raiz;?>adm_users/">Usuário Administrativo</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>adm_users/">Usu&aacute;rios Administrativos</a>
         </div>
       </li>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Relatórios
+          Relat&oacute;rios
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
           <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/impressoes.php">Impressoes</a>

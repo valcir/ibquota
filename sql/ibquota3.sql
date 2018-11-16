@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS `log_ibquota` (
 
 CREATE TABLE IF NOT EXISTS `politicas` (
 `cod_politica` int(10) unsigned NOT NULL,
+  `nome` varchar(128) NOT NULL,
   `quota_acumulativa` tinyint(1) NOT NULL DEFAULT '0',
   `quota_infinita` tinyint(1) NOT NULL DEFAULT '0',
   `quota_padrao` float DEFAULT NULL,

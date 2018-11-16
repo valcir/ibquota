@@ -257,3 +257,19 @@ function status_impressao($mysqli,$cod_status_impressao) {
     } 
     return $nome_status;
 }
+
+function is_base_local($mysqli) {
+    if ($stmt = $mysqli->prepare("SELECT base_local 
+                                  FROM config_geral
+                                  LIMIT 1")) {
+        $stmt->execute(); 
+        $stmt->bind_result($base_local);
+        $stmt->fetch();
+
+        if ($base_local == 1) {
+            return true;
+        } 
+        return false;
+    } 
+    return false;
+}
