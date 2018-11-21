@@ -129,9 +129,19 @@ Em "Administration", clique em "Add Printer" Faça a instalação da impressora 
     - Acesse o GG http://ip_do_servidor/gg 
     - Login com "admin" (A senha será resetada)
     - Configuração principal (Paths, Base de usuários [SQL ou LDAP/AD], DEBUG)
-    - Criar Usuário ou Grugo, se Base for SQL;
+    - Criar Usuário e Grupo, se Base for SQL;
     - Criar Política de Impressão
     - Faça um teste de impressão... 
+    
+8 - Teste a configuração do Backend:
+
+    $ perl /usr/lib/cups/backend/ibquota3 --check
+    
+    PATH_PYTHON = /usr/bin/python [OK]
+    Python is executable [OK]
+    PATH_PKPGCOUNTER = /usr/bin/pkpgcounter [OK]
+    Base de Dados: LOCAL SQL [OK]
+    ...
 
 Obrigado pelo interesse no IBQUOTA!
 
