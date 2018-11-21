@@ -445,10 +445,60 @@ sub Decrease_quota {
 ##  Begin Script
 ##
 
-if ( @ARGV == 0 ){
+if ( @ARGV == 0 ) {
    #log_failure ("Cups backend called without argument!");
    log_in_file ("Cups backend called without argument!");
    exit 5;
+}
+
+if ( @ARGV == 1 ) {
+   if ($ARGV[0] eq "--help") {
+      # Mostra Help
+      print("IBQUOTA VERSAO 3.0 - CUPS BACKEND\n");
+      print("Print Accounting Software\n");
+      print("\n");
+      print("Este arquivo eh um Backend do CUPS.\n");
+      print("Deve estar copiado em /usr/lib/cups/backend (confira sua distribuicao LINUX)\n");
+      print("\nArgumentos:\n\n");
+      print("   --check   Realiza checagem dos paramentos (Paths, SQL, LDAP...) \n\n");
+      print("Consulte: www.ib.unicamp.br/ibquota\n\n");
+      exit 5;
+   }
+
+   if ($ARGV[0] eq "--check") {
+      # Mostra Check
+
+      # Python exist?
+      if ( -e $path_python ) {
+         print("PATH_PYTHON = " . $path_python . " [OK]\n");
+      } else {
+         print("PATH_PYTHON = " . $path_python . " [Nao Existe]\n");
+      }
+
+      # Python executable?
+      if ( -x $path_python ) {
+         print("Python is executable [OK]\n");
+      } else {
+         print ("Check 'chmod +x $path_python' [Nao Executavel]\n");
+      }
+
+      # pkpgcounter exist?
+      if ( -e $path_pkpgcounter ) {
+         print("PATH_PKPGCOUNTER = " . $path_pkpgcounter . " [OK]\n");
+      } else {
+         print("PATH_PKPGCOUNTER = " . $path_pkpgcounter . " [Nao Existe]\n");
+      }
+
+      if ($Base_Local == 1) {
+         print ("Base de Dados: LOCAL SQL [OK]\n");
+      } else {
+         print ("Base de Dados: LDAP [OK]\n");
+      }
+
+      print("\n");
+      exit 5;
+   }
+
 }
 
 
