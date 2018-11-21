@@ -80,7 +80,7 @@ O script principal (ibquota3) deverá ser copiado para dentro do CUPS.
 
 Agora temos que editar o backend:
 
-    $ sudo vi /usr/lig/cups/ibquota3
+    $ sudo vi /usr/lib/cups/ibquota3
 
     my $DBhost="localhost";
     my $DBlogin="ibquota";
