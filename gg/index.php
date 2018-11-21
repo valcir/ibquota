@@ -22,8 +22,20 @@ if (login_check($mysqli) == false) {
 //  header("Location: ../login.php");
 //  exit();
 //}
- 
+
+include_once 'includes/status_dash.php';
 include 'includes/header.php';
+
+
+echo "<div class=\"card-columns\">\n";
+
+top_usuarios_hoje($mysqli);
+top_usuarios_mes($mysqli);
+qtde_impressoes_hoje($mysqli);
+qtde_impressoes_mes($mysqli);
+erros_log_ibquota($mysqli);
+
+echo "</div>\n";
 
 ?>
 
