@@ -40,6 +40,7 @@ use File::Basename;
 use File::Copy;
 use Sys::Hostname;
 use DBD::mysql; 
+use Net::LDAP;
 
 #Versao IBQUOTA
 my $VERSAO_IBQUOTA = "3.0";
@@ -190,13 +191,13 @@ sub User_in_groups {
    # Database LDAP?
    if ( $Base_Local == 0 ) {
       #LDAP
-      my $ldap = Net::LDAP->new( $LDAP_Server ) or die "$@";
+      my $ldap = Net::LDAP->new( $LDAP_Server,port => $LDAP_Port ) or die "$@";
       my $mesg;
       my $error_ldap = 0;
-      if ( $LDAP_User == "" ) {
+      if ( ! $LDAP_User ) {
          $mesg = $ldap->bind ;    # an anonymous bind
       } else {
-         $mesg = $ldap->bind($LDAP_User,$LDAP_Password);
+         $mesg = $ldap->bind($LDAP_User, password => $LDAP_Password);
       }
        
       $mesg = $ldap->search( # perform a search
@@ -501,26 +502,32 @@ if ( @ARGV == 1 ) {
       } else {
          print ("Base de Dados: LDAP [OK]\n");
 
-         my $ldap_check = Net::LDAP->new( $LDAP_Server ) or die "$@";
+         my $ldap_check = Net::LDAP->new( $LDAP_Server, port => $LDAP_Port ) or die "$@";
          my $mesg_check;
          my $error_ldap_check = 0;
-         if ( $LDAP_User == "" ) {
+         if ( ! $LDAP_User ) {
             $mesg_check = $ldap_check->bind ;    # an anonymous bind
+            print("LDAP BIND Anonimo\n"); 
          } else {
-            $mesg_check = $ldap_check->bind($LDAP_User,$LDAP_Password);
+            $mesg_check = $ldap_check->bind($LDAP_User, password => $LDAP_Password);
+            print("LDAP BIND USER = ". $LDAP_User ."\n"); 
          }
          my $Filter_users = "(|(samaccountname=*)(uid=*))";
          $mesg_check = $ldap_check->search( # perform a search
                           base   => $LDAP_Base,
                           filter => $Filter_users
                         );
-         if ( $mesg_check->code != 0 ) {
+         if ( ($mesg_check->code != 0) && ($mesg_check->code != 4) ) {
             print("LDAP BIND [Erro]\n");
             $error_ldap_check = $mesg_check->code;
-            print("LDAP ERROR User: ". $error_ldap_check ."\n");
+            print("User LDAP CODE ERROR: ". $error_ldap_check ."\n");
          } else {
             print("LDAP BIND [OK]\n");
-            print("LDAP Search Users: ". $mesg_check->count ." entradas [OK]\n");
+            print("LDAP Search Users: ");
+            if ( $mesg_check->code == 4 ) {
+               print("+");
+            } 
+            print($mesg_check->count ." entradas [OK]\n");
          }
 
          # Windows AD (group) or LDAP server (groupsOfNames)
@@ -529,7 +536,7 @@ if ( @ARGV == 1 ) {
                          base   => $LDAP_Base,
                          filter => $ldap_filter_check
                        );
-         if ( $mesg_check->code != 0 ) {
+         if ( ($mesg_check->code != 0 ) && ($mesg_check->code != 4) ) {
             $error_ldap_check = $mesg_check->code;
             print("LDAP ERROR Group: ". $error_ldap_check ."\n");
          } else {
