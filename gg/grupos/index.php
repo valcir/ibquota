@@ -89,8 +89,11 @@ if ($stmt = $mysqli->prepare("SELECT cod_grupo,grupo
 <?php barra_de_paginas($p,$p_num_registros); ?>
 </td></tr>
 
-<tr bgcolor="fafafa"><td align="center">
-<h4>Cadastro r&aacute;pido de grupo:</h4>
+<tr><td align="center">
+
+<div class="card">
+  <div class="card-body">
+<h4>Cadastro r&aacute;pido</h4>
 
 <form  action="grupo_add.php" method="post">
   <div class="form-group">
@@ -99,7 +102,7 @@ if ($stmt = $mysqli->prepare("SELECT cod_grupo,grupo
   <button type="submit" class="btn btn-primary">Cadastrar</button>
 </form><br>
 
-
+</div></div>
 
 </td></tr>
 

@@ -41,6 +41,9 @@ use File::Copy;
 use Sys::Hostname;
 use DBD::mysql; 
 
+#Versao IBQUOTA
+my $VERSAO_IBQUOTA = "3.0";
+
 # Data Bases Connect
 my $dsn = "DBI:mysql:database=$DBdatabase;host=$DBhost;port=$DBport";
 my $DB = DBI->connect($dsn, $DBlogin, $DBpassword);
@@ -454,19 +457,23 @@ if ( @ARGV == 0 ) {
 if ( @ARGV == 1 ) {
    if ($ARGV[0] eq "--help") {
       # Mostra Help
-      print("IBQUOTA VERSAO 3.0 - CUPS BACKEND\n");
+      print("IBQUOTA VERSAO ". $VERSAO_IBQUOTA ." - CUPS BACKEND\n");
       print("Print Accounting Software\n");
       print("\n");
       print("Este arquivo eh um Backend do CUPS.\n");
       print("Deve estar copiado em /usr/lib/cups/backend (confira sua distribuicao LINUX)\n");
       print("\nArgumentos:\n\n");
-      print("   --check   Realiza checagem dos paramentos (Paths, SQL, LDAP...) \n\n");
+      print("   --check   Realiza checagem dos paramentros (Paths, SQL, LDAP...) \n\n");
       print("Consulte: www.ib.unicamp.br/ibquota\n\n");
       exit 5;
    }
 
    if ($ARGV[0] eq "--check") {
       # Mostra Check
+      print("IBQUOTA VERSAO ". $VERSAO_IBQUOTA ." - CUPS BACKEND\n");
+      print("Print Accounting Software\n");
+      print("\n");
+      print("Checagem dos parametros:\n");
 
       # Python exist?
       if ( -e $path_python ) {
@@ -493,6 +500,42 @@ if ( @ARGV == 1 ) {
          print ("Base de Dados: LOCAL SQL [OK]\n");
       } else {
          print ("Base de Dados: LDAP [OK]\n");
+
+         my $ldap_check = Net::LDAP->new( $LDAP_Server ) or die "$@";
+         my $mesg_check;
+         my $error_ldap_check = 0;
+         if ( $LDAP_User == "" ) {
+            $mesg_check = $ldap_check->bind ;    # an anonymous bind
+         } else {
+            $mesg_check = $ldap_check->bind($LDAP_User,$LDAP_Password);
+         }
+         my $Filter_users = "(|(samaccountname=*)(uid=*))";
+         $mesg_check = $ldap_check->search( # perform a search
+                          base   => $LDAP_Base,
+                          filter => $Filter_users
+                        );
+         if ( $mesg_check->code != 0 ) {
+            print("LDAP BIND [Erro]\n");
+            $error_ldap_check = $mesg_check->code;
+            print("LDAP ERROR User: ". $error_ldap_check ."\n");
+         } else {
+            print("LDAP BIND [OK]\n");
+            print("LDAP Search Users: ". $mesg_check->count ." entradas [OK]\n");
+         }
+
+         # Windows AD (group) or LDAP server (groupsOfNames)
+         my $ldap_filter_check = "(&(|(memberof=*)(member=*))(|(objectClass=group)(objectClass=groupOfNames)))";
+         $mesg_check = $ldap_check->search( # perform a search
+                         base   => $LDAP_Base,
+                         filter => $ldap_filter_check
+                       );
+         if ( $mesg_check->code != 0 ) {
+            $error_ldap_check = $mesg_check->code;
+            print("LDAP ERROR Group: ". $error_ldap_check ."\n");
+         } else {
+            print("LDAP Search Groups: ". $mesg_check->count ." entradas [OK]\n");
+         }
+
       }
 
       print("\n");

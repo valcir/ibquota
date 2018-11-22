@@ -79,7 +79,7 @@ if (isset($_POST['path_pkpgcounter']) or isset($_POST['path_python'])
 
 
 <center>
-  <div class="card mb-4 shadow-sm" style="width: 30rem;">
+  <div class="card mb-4 shadow-sm" style="width: 40rem;">
     <div class="card-header bg-success">
       <h4 class="my-0 font-weight-normal">Configuração Geral do IBQUOTA</h4>
     </div>
