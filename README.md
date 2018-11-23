@@ -88,7 +88,7 @@ Agora temos que editar o backend:
     my $DBdatabase="ibquota3";
     my $DBport=3306;
  
-    $ cd gg
+    $ cd ../gg
     $ sudo mkdir /var/www/html/gg
     $ sudo cp -r * /var/www/html/gg
 
@@ -98,11 +98,11 @@ Neste momento iremos editar o arquivo com as configurações de acesso a banco.
     $ sudo vi includes/db.php
 
     define("HOST", "localhost");     // Servidor com o qual voce quer se conectar.
-    define("USER", "root");       // Usuário para acessar o banco de dados. 
-    define("PASSWORD", "");   // Senha de acesso ao banco de dados. 
+    define("USER", "ibquota");       // Usuário para acessar o banco de dados. 
+    define("PASSWORD", "senha");   // Senha de acesso ao banco de dados. 
     define("DATABASE", "ibquota3");  // O nome do banco de dados.
 
-5 - Reinicial CUPS:
+5 - Reiniciar o CUPS:
 
     $ sudo /etc/init.d/cups restart
 
