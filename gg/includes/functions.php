@@ -242,8 +242,8 @@ function primeiro_acesso($mysqli) {
     return false;
 }
 
-
-function status_impressao($mysqli,$cod_status_impressao) {
+function status_impressao($cod_status_impressao) {
+    $mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
     if ($stmt = $mysqli->prepare("SELECT nome_status 
                                   FROM status_impressao 
                                   WHERE cod_status_impressao = ? LIMIT 1")) {
@@ -259,17 +259,89 @@ function status_impressao($mysqli,$cod_status_impressao) {
 }
 
 function is_base_local($mysqli) {
-    if ($stmt = $mysqli->prepare("SELECT base_local 
-                                  FROM config_geral
-                                  LIMIT 1")) {
-        $stmt->execute(); 
-        $stmt->bind_result($base_local);
-        $stmt->fetch();
-
-        if ($base_local == 1) {
+    $stmt_base_local = $mysqli->prepare("SELECT base_local FROM config_geral");
+    //$stmt->bind_param();
+    $stmt_base_local->execute();
+    $stmt_base_local->bind_result($base_local);
+    $stmt_base_local->fetch();
+        if ($base_local) {
+            $stmt_base_local->close();
             return true;
         } 
         return false;
-    } 
-    return false;
 }
+
+function quota_padrao($cod_politica) { 
+    $mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
+    $stmt_quota = $mysqli->prepare("SELECT quota_padrao 
+                                  FROM politicas 
+                                  WHERE cod_politica = ?");
+    $stmt_quota->bind_param('i',$cod_politica);
+    $stmt_quota->execute(); 
+    $stmt_quota->bind_result($quota_padrao);
+    $stmt_quota->fetch();
+    $stmt_quota->close();
+    return $quota_padrao;
+}
+
+function grupo_usuario_politica($cod_politica,$usuario) { 
+    $mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
+    $base_local = is_base_local($mysqli);
+
+    $stmt = $mysqli->prepare("SELECT grupo 
+                                FROM politica_grupo
+                                WHERE cod_politica = ?");
+    $stmt->bind_param('i', $cod_politica);
+    $stmt->execute(); 
+    $result = $stmt->get_result();
+    $stmt->close();
+   /* Get the number of rows */
+   //$num_of_rows = $result->num_rows;
+
+   while ($row = $result->fetch_assoc()) {
+        $grupo = $row['grupo'];
+        if ($base_local) {
+            //SQL
+            $stmt_grupo = $mysqli->prepare("SELECT usuarios.usuario
+                                FROM grupos,grupo_usuario,usuarios
+                                WHERE grupos.grupo = ? AND 
+                                 grupos.cod_grupo = grupo_usuario.cod_grupo AND 
+                                 usuarios.usuario = ? AND 
+                                 usuarios.cod_usuario = grupo_usuario.cod_usuario");
+            $stmt_grupo->bind_param('ss',$grupo,$usuario);
+            $stmt_grupo->execute(); 
+            $stmt_grupo->store_result();
+            if ($stmt_grupo->num_rows > 0) {
+                $stmt_grupo->close();
+                return $grupo;
+            }
+
+        } else {
+            // LDAP
+
+
+        }
+    } // while
+    return "";
+}
+
+function quota_usuario($cod_politica,$usuario) { 
+    $mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
+    $stmt = $mysqli->prepare("SELECT quota 
+                                  FROM quota_usuario
+                                  WHERE cod_politica = ? AND
+                                  usuario = ? LIMIT 1");
+    $stmt->bind_param('is',$cod_politica, $usuario);
+    $stmt->execute(); 
+    $stmt->bind_result($quota);
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+        $stmt->fetch();        
+        return $quota;
+    } else{
+        return quota_padrao($cod_politica);
+    }
+
+}
+
+

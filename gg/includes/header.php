@@ -55,7 +55,7 @@ if (file_exists("css")) {
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
           <a class="dropdown-item" href="<?php echo $path_raiz;?>usuarios/">Usu&aacute;rios</a>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>grupos/">Grupos</a>
-          <a class="dropdown-item" href="#">Impressora</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>usuarios/usuario_quota_add.php">Quota Adicional</a>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>politicas/">Pol&iacute;tica de Impressão</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>adm_users/">Usu&aacute;rios Administrativos</a>
