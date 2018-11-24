@@ -172,6 +172,21 @@ CREATE TABLE IF NOT EXISTS `quota_usuario` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 
+--
+-- Estrutura da tabela `quota_adicional`
+--
+
+CREATE TABLE IF NOT EXISTS `quota_adicional` (
+`cod_quota_adicional` int(10) unsigned NOT NULL,
+  `cod_politica` int(10) unsigned NOT NULL,
+  `grupo` varchar(150) NOT NULL,
+  `usuario` varchar(150) NOT NULL,
+  `quota_adicional` float NOT NULL,
+  `motivo` varchar(255) NULL,
+  `datahora` datetime NOT NULL,
+  `useradmin` varchar(150) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
 -- --------------------------------------------------------
 
 --
@@ -298,6 +313,11 @@ ALTER TABLE `quota_usuario`
  ADD PRIMARY KEY (`cod_quota_usuario`), ADD KEY `quota_usuario_FKIndex1` (`cod_politica`), ADD KEY `quota_usuario_FKIndex2` (`grupo`);
 
 --
+-- Indexes for table `quota_adicional`
+--
+ALTER TABLE `quota_adicional` ADD PRIMARY KEY (`cod_quota_adicional`);
+
+--
 -- Indexes for table `status_impressao`
 --
 ALTER TABLE `status_impressao`
@@ -369,6 +389,11 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 ALTER TABLE `quota_usuario`
 MODIFY `cod_quota_usuario` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
+--
+-- AUTO_INCREMENT for table `quota_adicional`
+--
+ALTER TABLE `quota_adicional`
+MODIFY `cod_quota_adicional` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `status_impressao`
 --
