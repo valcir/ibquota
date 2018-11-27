@@ -132,7 +132,7 @@ if ( isset($_POST['impressora']) && isset($_POST['cod_politica'])) {
        
        //Não, entrao adicionar 
         $insert_stmt = $mysqli->prepare("INSERT INTO politica_impressora 
-          (impressora, cod_politica) VALUES (?, ?)");
+          (impressora, cod_politica,peso) VALUES (?, ?,1)");
         $insert_stmt->bind_param('si', $impressora,$cod_politica);
         $insert_stmt->execute();
     }

@@ -156,7 +156,7 @@ if (isset($_GET['cod_politica'])) {
         echo "<a href=\"politica_gp.php?cod_politica_grupo=". $cod_politica_grupo;
         echo "&cod_politica=$cod_politica\">";
         echo "<button type=\"button\" class=\"btn btn-danger btn-sm\" title=\"Excluir Grupo da Pol&iacute;tica\">X</button></a>";
-        echo " $grupo</li>\n";
+        echo "&nbsp;&nbsp;<b>$grupo</b></li>\n";
      }
      if ($sem_politica_grupo == 0) {
         echo "<li class=\"list-group-item\"><i> Sem grupo nesta pol&iacute;tica</i></li>";
@@ -229,14 +229,14 @@ if (isset($_GET['cod_politica'])) {
 <?php
 
      // Busca Politicas no banco de dados 
-     if ($stmt = $mysqli->prepare("SELECT cod_politica_impressora,impressora 
+     if ($stmt = $mysqli->prepare("SELECT cod_politica_impressora,impressora,peso 
           FROM politica_impressora 
           WHERE cod_politica = ? 
           ORDER by impressora")) {
         $stmt->bind_param('i',$cod_politica);
         $stmt->execute(); 
         $stmt->store_result();
-        $stmt->bind_result($cod_politica_impressora,$impressora);
+        $stmt->bind_result($cod_politica_impressora,$impressora,$peso);
      }
      $sem_politica_impressora = 0;
      // Lista politica_impressora 
@@ -246,7 +246,7 @@ if (isset($_GET['cod_politica'])) {
         echo "<a href=\"politica_gp.php?cod_politica_impressora=". $cod_politica_impressora;
         echo "&cod_politica=$cod_politica\">";
         echo "<button type=\"button\" class=\"btn btn-danger btn-sm\" title=\"Excluir Impressora da Pol&iacute;tica\">X</button></a>";
-        echo " $impressora</li>\n";
+        echo "&nbsp;&nbsp;<b>$impressora </b><small><i> Peso: $peso</i></small></li>\n";
      }
      if ($sem_politica_impressora == 0) {
         echo "<li class=\"list-group-item\"><i> Sem impressora nesta pol&iacute;tica</i></li>";

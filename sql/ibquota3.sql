@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `politica_impressora` (
   `cod_politica` int(10) unsigned NOT NULL,
   `impressora` varchar(150) NOT NULL,
   `prioridade` int(10) unsigned NOT NULL,
-  `contador_de_paginas` varchar(10) NOT NULL
+  `peso` float NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
