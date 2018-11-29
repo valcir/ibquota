@@ -29,21 +29,21 @@ Localizar a linha "Listen localhost:631" e alterar para:
 
 Dar permissão de acesso ao CUPS, altere as linhas conforme abaixo:
 
-    Restrict access to the server...
+    #Restrict access to the server...
     <Location />
-    Allow all
+      Allow all
       Order allow,deny
     </Location>
 
-    Restrict access to the admin pages...
+    #Restrict access to the admin pages...
     <Location /admin>
-    Allow all
+      Allow all
       Order allow,deny
     </Location>
 
-    Restrict access to configuration files...
+    #Restrict access to configuration files...
     <Location /admin/conf>
-    Allow all
+      Allow all
       AuthType Default
       Require user @SYSTEM
       Order allow,deny
@@ -61,7 +61,7 @@ Criar o banco de dados:
 Criar a estrutura do Banco (tabelas) através do script ibquota3.sql.
     
     $ cd ibquota3/sql
-    $ sudo mysql -u root -p ***** < ibquota3.sql
+    $ sudo mysql -u root -p ***** ibquota3 < ibquota3.sql
 
 Criar um usuário no Banco:
 
