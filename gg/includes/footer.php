@@ -10,11 +10,10 @@
 ?>
   <div class="dropdown-divider"></div>
 
-  <div class="jumbotron jumbotron-fluid bg-success">
-    <div class="container">    
-      <p class="lead">https://www.ib.unicamp.br/ibquota/</p>
-    </div>
-  </div>
+  
+<div class="alert bg-success" role="alert">
+  <b><a href="https://www.ib.unicamp.br/ibquota/">VERS&Atilde;O 3.0</a></b>
+</div>
  
  
 
