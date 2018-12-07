@@ -18,7 +18,7 @@ if (login_check($mysqli) == false) {
   exit();
 }
 
-if ($_SESSION['permissao'] != 0){
+if ($_SESSION['permissao'] != 2){
   header("Location: ../login.php");
   exit();
 }
@@ -129,12 +129,12 @@ if ($stmt = $mysqli->prepare("SELECT cod_adm_users,login,nome,email,permissao
      </div>
 
      <div class="form-group row">
-          <label class="form-group col-form-label-sm">Nível de Permissão:&nbsp;&nbsp;</label>
+          <label class="form-group col-form-label-sm">N&iacute;vel de Permiss&atilde;o:&nbsp;&nbsp;</label>
           <select class="form-control form-control-sm" name="permissao">
-              <option value="0">Administrador Geral do IBQUOTA</option>
-              <option value="1" selected>Administrador de Impressão</option>
-              <option value="2">Visualiza Relat&oacute;rio</option>
-          </select>
+                    <option value="2">Administrador Geral do IBQUOTA</option>
+                    <option value="1" selected>Administrador de Impress&atilde;o</option>
+                    <option value="0">Visualiza Relat&oacute;rio</option>
+          </select> 
      </div>
 
 

@@ -17,7 +17,7 @@ if (login_check($mysqli) == false) {
   exit();
 }
 
-if ($_SESSION['permissao'] != 0){
+if ($_SESSION['permissao'] != 2){
   header("Location: ../login.php");
   exit();
 }
@@ -63,9 +63,9 @@ if (isset($_POST['login']) == false ) {
            <div class="form-group row">
                 <label class="form-group col-form-label-sm">Nível de Permissão:&nbsp;&nbsp;</label>
                 <select class="form-control form-control-sm" name="permissao">
-                    <option value="0">Administrador Geral do IBQUOTA</option>
-                    <option value="1" selected>Administrador de Impressão</option>
-                    <option value="2">Visualiza Relat&oacute;rio</option>
+                    <option value="2">Administrador Geral do IBQUOTA</option>
+                    <option value="1" selected>Administrador de Impress&atilde;o</option>
+                    <option value="0">Visualiza Relat&oacute;rio</option>
                 </select>
            </div>
 
@@ -127,7 +127,7 @@ if ($insert_stmt = $mysqli->prepare("INSERT INTO adm_users (cod_adm_users,
     if (! $insert_stmt->execute()) {
       header('Location: error.php?err=Registration failure: INSERT adm_users');
     }
-    echo "<div class=\"alert alert-danger\" role=\"alert\">Usu&aacute;rio Administrador <em>". $login ."</em> Cadastrado com Sucesso.</div><br><br><center>";
+    echo "<div class=\"alert alert-success\" role=\"alert\">Usu&aacute;rio Administrador <em>". $login ."</em> Cadastrado com Sucesso.</div><br><br><center>";
     echo "<a class=\"btn btn-primary\" href=\"index.php\" role=\"button\" aria-expanded=\"false\">Voltar</a>&nbsp;&nbsp;";
     echo "<a class=\"btn btn-primary\" href=\"adm_users_add.php\" role=\"button\" aria-expanded=\"false\">Novo Usu&aacute;rio Administrador</a>";
     echo "</center><br>";

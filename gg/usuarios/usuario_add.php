@@ -17,6 +17,11 @@ if (login_check($mysqli) == false) {
   exit();
 }
 
+if ($_SESSION['permissao'] < 1){
+  header("Location: ../login.php");
+  exit();
+}
+
 include '../includes/header.php';
 
 

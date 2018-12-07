@@ -17,7 +17,7 @@ if (login_check($mysqli) == false) {
     exit();
 }
 
-if ($_SESSION['permissao'] != 0){
+if ($_SESSION['permissao'] != 2){
     header("Location: ../login.php");
     exit();
 }
