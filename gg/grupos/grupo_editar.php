@@ -19,6 +19,10 @@ if (login_check($mysqli) == false) {
   exit();
 }
 
+if ($_SESSION['permissao'] < 1){
+  header("Location: ../login.php");
+  exit();
+}
 
 // Não teve variavel enviada pelo Formulario
 if ( !isset($_GET['cod_grupo']) && !isset($_POST['cod_grupo']) ) {
