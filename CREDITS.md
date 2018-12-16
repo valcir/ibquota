@@ -2,7 +2,10 @@ CREDITS - 2018-10-28
 ====================
 VERSION 3X:   
 
-  Coordenador do Projeto: Valcir Cabral / Unicamp   
+   Allan Michel de Souza / Unicamp
+   Bruno Gomes Ximenes / Unicamp
+   
+   Coordenador do Projeto: Valcir Cabral / Unicamp   
  
 
 VERSION 2X:   
@@ -19,6 +22,6 @@ VERSION 2X:
    Henrique Jose Goncalves / IBTA [2003]   
    Rodrigo Zadra. Armond / CEDEPLAR - UFMG [2003]   
 
-  Coordenador do Projeto: Valcir Cabral / Unicamp
+   Coordenador do Projeto: Valcir Cabral / Unicamp
 
 Se esqueci de algum nome, por favor, me desculpa e por favor mande um email para: valcir (a) u*****p . br
