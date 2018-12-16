@@ -4,7 +4,7 @@
 
 AJUDE NO DESENVOLVIMENTO: Reporte erros ou sugestões!
 
-    Versão Pré (3.0): 15/Dez/18
+    Versão Pré (3.0): 15/Dez/18 [https://github.com/valcir/ibquota/tree/IBQUOTA-3.0]
     Versão STABLE (3.1): 15/Jan/19
 
 Instalação
