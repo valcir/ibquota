@@ -2,8 +2,8 @@ CREDITS - 2018-10-28
 ====================
 VERSION 3X:   
 
-   Allan Michel de Souza / Unicamp
-   Bruno Gomes Ximenes / Unicamp
+   Allan Michel de Souza / Unicamp  
+   Bruno Gomes Ximenes / Unicamp   
    
    Coordenador do Projeto: Valcir Cabral / Unicamp   
  
