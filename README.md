@@ -66,7 +66,7 @@ Criar a estrutura do Banco (tabelas) através do script ibquota3.sql.
 Criar um usuário no Banco:
 
     $ sudo mysql -u root -p
-    mysql> GRANT ALL ON ibquota3.* TO ibquota@localhost identified by 'senha';
+    mysql> GRANT ALL ON ibquota3.* TO ibquota@localhost identified by 'ibquota';
     mysql> FLUSH PRIVILEGES;
     mysql> exit
  
@@ -84,7 +84,7 @@ Agora temos que editar o backend:
 
     my $DBhost="localhost";
     my $DBlogin="ibquota";
-    my $DBpassword="senha";
+    my $DBpassword="ibquota";
     my $DBdatabase="ibquota3";
     my $DBport=3306;
  
@@ -99,7 +99,7 @@ Neste momento iremos editar o arquivo com as configurações de acesso a banco.
 
     define("HOST", "localhost");     // Servidor com o qual voce quer se conectar.
     define("USER", "ibquota");       // Usuário para acessar o banco de dados. 
-    define("PASSWORD", "senha");   // Senha de acesso ao banco de dados. 
+    define("PASSWORD", "ibquota");   // Senha de acesso ao banco de dados. 
     define("DATABASE", "ibquota3");  // O nome do banco de dados.
 
 5 - Reiniciar o CUPS:
