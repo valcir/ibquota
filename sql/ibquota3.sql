@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS `adm_users` (
 --
 
 INSERT INTO `adm_users` (`cod_adm_users`, `nome`, `login`, `email`, `senha`,`permissao`) VALUES
-(1, 'Admin IBQUOTA', 'admin', '', '', 0);
+(1, 'Admin IBQUOTA', 'admin', '', '', 2);
 ALTER TABLE `adm_users` ADD PRIMARY KEY (`cod_adm_users`);
 
 
