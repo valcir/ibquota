@@ -45,9 +45,9 @@ if (file_exists("css")) {
       <li class="nav-item active">
         <a class="nav-link" href="<?php echo $path_raiz;?>index.php">Home</a>
       </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="<?php echo $path_raiz;?>configuracao.php">Configuração</a>
-      </li>
+<?php
+ if ($_SESSION['permissao'] > 0){
+?>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Cadastros
@@ -56,33 +56,45 @@ if (file_exists("css")) {
           <a class="dropdown-item" href="<?php echo $path_raiz;?>usuarios/">Usu&aacute;rios</a>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>grupos/">Grupos</a>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>usuarios/usuario_quota_add.php">Quota Adicional</a>
-          <a class="dropdown-item" href="<?php echo $path_raiz;?>politicas/">Pol&iacute;tica de Impressão</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="<?php echo $path_raiz;?>adm_users/">Usu&aacute;rios Administrativos</a>
         </div>
       </li>
+<?php
+ }
+?>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Relat&oacute;rios
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/impressoes.php">Impressoes</a>
-          <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/impressoes_com_erro.php">Impressoes com erro</a>
-          <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/grupos.php">Grupos</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/impressoes.php">Impress&otilde;es</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/impressoes_com_erro.php">Impress&otilde;es com erro</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>relatorios/ibquota_logs.php">Erros Backend</a>
         </div>
-      </li>      
+      </li> 
+
+<?php
+ if ($_SESSION['permissao'] == 2){
+?>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Documentação
+          Avan&ccedil;ado
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
-          <a class="dropdown-item" href="#">Documentacao</a>
+
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>configuracao.php">Configura&ccedil;&atilde;o Geral </a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>politicas/">Pol&iacute;ticas de Impress&atilde;o</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>politicas/init_quota_politica.php">Inicializa Quota de Impress&atilde;o</a>
+
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>adm_users/">Usu&aacute;rios Administrativos</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">FAQ - Perguntas Frequentes</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>test_ldap.php">Teste de Conex&atilde;o LDAP</a>
         </div>
       </li>
+<?php
+ }
+?>
+
     </ul>
 
     <ul class="navbar-nav navbar-right">
@@ -92,7 +104,7 @@ if (file_exists("css")) {
         </a>
         <div class="dropdown-menu bg-success" aria-labelledby="navbarDropdown" >
           <a class="dropdown-item" href="<?php echo $path_raiz;?>trocarsenha.php">Trocar Senha</a>
-          <a class="dropdown-item" href="#">Ajuda</a>
+          <a class="dropdown-item" href="<?php echo $path_raiz;?>ajuda.php">Ajuda</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<?php echo $path_raiz;?>includes/logout.php">Sair</a>
         </div>
