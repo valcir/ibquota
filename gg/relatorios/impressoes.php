@@ -89,9 +89,9 @@ if ($stmt = $mysqli->prepare("SELECT data_impressao,hora_impressao,job_id,impres
       echo "<td>$nome_documento</td>";
       echo "<td>$paginas</td>";
       echo "<td>";
-      echo status_impressao($mysqli,$cod_status_impressao); 
+      echo status_impressao($cod_status_impressao); 
       echo "</td>\n";
-      $sem_grupo = 0;
+      $sem_grupo = 0; 
    } 
    if ($sem_grupo == 1) {
       echo "<tr><td colspan=\"7\"><i>Sem registro de Impressao</i></td></tr>";
