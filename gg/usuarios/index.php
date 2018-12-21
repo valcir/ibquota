@@ -74,6 +74,10 @@ if ($stmt = $mysqli->prepare("SELECT cod_usuario,usuario
     <td><?php echo $usuario; ?></td>
     <td align="right">
 
+      <a href="usuario_grupo.php<?php echo '?cod_usuario=' . $cod_usuario; ?>">
+        <button type="button" class="btn btn-info btn-sm" title="Grupo">G</button>
+      </button></a>
+
       <a href="usuario_editar.php<?php echo '?cod_usuario=' . $cod_usuario; ?>">
         <button type="button" class="btn btn-info btn-sm" title="Editar Usuario">E</button>
       </button></a>
@@ -115,22 +119,6 @@ if ($stmt = $mysqli->prepare("SELECT cod_usuario,usuario
 
 </table>
 </center>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
