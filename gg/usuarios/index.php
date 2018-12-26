@@ -10,7 +10,7 @@
 include_once '../includes/db.php';
 include_once '../includes/functions.php';
 
- 
+
 sec_session_start();
 
 if (login_check($mysqli) == false) {
@@ -18,7 +18,7 @@ if (login_check($mysqli) == false) {
   exit();
 }
 
-if ($_SESSION['permissao'] < 1){
+if ($_SESSION['permissao'] == 2){
   header("Location: ../login.php");
   exit();
 }
