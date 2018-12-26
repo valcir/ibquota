@@ -11,7 +11,7 @@ Instalação
 
 1 - Executar os processos de instalação dos pacotes.
 
-    $ sudo apt install apache2 php mysql-server libapache2-mod-php php-mysql php-ldap libdbd-mysql-perl libnet-ldap-perl build-essential cups pkpgcounter
+    $ sudo apt install apache2 php mysql-server libapache2-mod-php php-mysql php-ldap libdbd-mysql-perl libnet-ldap-perl build-essential cups pkpgcounter samba
 
 2 - Download IBQUOTA 3 (versão em Desenvolvimento)
 
