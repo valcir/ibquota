@@ -11,7 +11,7 @@ Instalação
 
 1 - Executar os processos de instalação dos pacotes.
 
-    $ sudo apt-get install apache2 build-essential cups pkpgcounter mysql-server php libdbd-mysql-perl libnet-ldap-perl
+    $ sudo apt install apache2 php mysql-server libapache2-mod-php php-mysql libdbd-mysql-perl libnet-ldap-perl build-essential cups pkpgcounter
 
 2 - Download IBQUOTA 3 (versão em Desenvolvimento)
 
@@ -126,7 +126,7 @@ Em "Administration", clique em "Add Printer" Faça a instalação da impressora 
 
 7 - Configuração via GG:
 
-    - Acesse o GG http://ip_do_servidor/gg 
+    - Acesse o GG http://ip_do_servidor/gg
     - Login com "admin" (A senha será resetada)
     - Configuração principal (Paths, Base de usuários [SQL ou LDAP/AD], DEBUG)
     - Criar Usuário e Grupo, se Base for SQL;
