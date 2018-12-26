@@ -50,18 +50,11 @@ Dar permissão de acesso ao CUPS, altere as linhas conforme abaixo:
     </Location>
 
 4 - Banco de Dados:
- 
-Criar o banco de dados:
-
-    $ sudo mysql -u root -p
-    $ password: *****
-    $ mysql> CREATE DATABASE ibquota3;
-    $ mysql> exit
 
 Criar a estrutura do Banco (tabelas) através do script ibquota3.sql.
-    
+
     $ cd ibquota3/sql
-    $ sudo mysql -u root -p ***** ibquota3 < ibquota3.sql
+    $ sudo mysql -u root -p ***** < ibquota3.sql
 
 Criar um usuário no Banco:
 
