@@ -46,7 +46,7 @@ if (isset($_GET['cod_usuario'])) {
 
    $select_stmt->store_result();
    if ($select_stmt->num_rows < 1) {
-      echo "<div class=\"alert alert-danger\" role=\"alert\">Usuario inesistente!</div>";
+      echo "<div class=\"alert alert-danger\" role=\"alert\">Usu&aacute;rio inexistente!</div>";
       echo "<center><a class=\"btn btn-primary\" href=\"index.php\" role=\"button\" aria-expanded=\"false\">Voltar</a></center>";
       include '../includes/footer.php';
       exit();
@@ -58,12 +58,12 @@ if (isset($_GET['cod_usuario'])) {
 
 ?>
 
-<center><h2><font color=#428bca>Altera&ccedil;&atilde;o de Usuario</font></h2><br><br>
+<center><h2><font color=#428bca>Altera&ccedil;&atilde;o de Usu&aacute;rio</font></h2><br><br>
    <table border="0" width="600" align="center">
     <tr><td>
     <div class="panel panel-default">
       <div class="container-fluid">
-      <blockquote><h4>Usuario: <?php echo "$usuario"; ?> </h4></blockquote>
+      <blockquote><h4>Usu&aacute;rio: <?php echo "$usuario"; ?> </h4></blockquote>
       
         <form action="<?php echo esc_url($_SERVER['PHP_SELF']); ?>" method="post">
          <input type="hidden" name="cod_usuario" value="<?php echo $cod_usuario; ?>">
@@ -73,7 +73,7 @@ if (isset($_GET['cod_usuario'])) {
               <input type="text" class="form-control form-control-sm" name="usuario" placeholder="User" value="<?php echo $usuario;?>">
          </div>
 
-           <button type="submit" class="btn btn-primary">Alterar Usuario</button>&nbsp;&nbsp;
+           <button type="submit" class="btn btn-primary">Alterar Usu&aacute;rio</button>&nbsp;&nbsp;
            <a class="btn btn-primary" href="index.php" role="button" aria-expanded="false">Voltar</a></center>
         </form>
 
@@ -123,7 +123,7 @@ if ((isset($_POST['cod_usuario'])) AND (isset($_POST['usuario']))) {
  }
  $select_stmt->store_result();
  if ($select_stmt->num_rows > 0) {
-    echo "<div class=\"alert alert-danger\" role=\"alert\">Usuario com mesmo nome j&aacute; existente cadastrado!</div>";
+    echo "<div class=\"alert alert-danger\" role=\"alert\">Usu&aacute;rio com mesmo nome j&aacute; existente cadastrado!</div>";
     echo "<a class=\"btn btn-primary\" href=usuario_editar.php?cod_usuario=". $cod_usuario ." role=\"button\" aria-expanded=\"false\">Voltar</a>";
     include '../includes/footer.php';
     exit();
@@ -146,7 +146,7 @@ if ((isset($_POST['cod_usuario'])) AND (isset($_POST['usuario']))) {
   // Executar a tarefa pré-estabelecida.
   $update_stmt->execute();
   $update_stmt->close();
-  echo "<div class=\"alert alert-success\" role=\"alert\">Usuario Alterado com Sucesso!</div><br>";
+  echo "<div class=\"alert alert-success\" role=\"alert\">Usu&aacute;rio Alterado com Sucesso!</div><br>";
   echo "<a class=\"btn btn-primary\" href=\"index.php\" role=\"button\" aria-expanded=\"false\">Voltar</a>";
 
 
