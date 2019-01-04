@@ -62,7 +62,7 @@ if ($stmt = $mysqli->prepare("SELECT cod_adm_users,login,nome,email,permissao
  <table class="table table-striped">
    <tr>
     <th>Login</th>
-    <th align="right"><p align="right">Ações</p></th>
+    <th align="right"><p align="right">A&ccedil;&otilde;es</p></th>
   </tr>
 
 <?php
