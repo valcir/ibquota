@@ -47,7 +47,7 @@ if (isset($_GET['cod_adm_users'])) {
 
    $select_stmt->store_result();
    if ($select_stmt->num_rows < 1) {
-      echo "<div class=\"alert alert-danger\" role=\"alert\">Usuario inesistente!</div>";
+      echo "<div class=\"alert alert-danger\" role=\"alert\">Usu&aacute;rio inexistente!</div>";
       echo "<center><a class=\"btn btn-primary\" href=\"index.php\" role=\"button\" aria-expanded=\"false\">Voltar</a></center>";
       include '../includes/footer.php';
       exit();
@@ -59,7 +59,7 @@ if (isset($_GET['cod_adm_users'])) {
 
 ?>
 
-<center><h2><font color=#428bca>Altera&ccedil;&atilde;o de Usuário Administrativo</font></h2><br><br>
+<center><h2><font color=#428bca>Altera&ccedil;&atilde;o de Usu&aacute;rio Administrativo</font></h2><br><br>
    <table border="0" width="600" align="center">
     <tr><td>
     <div class="panel panel-default">
@@ -89,10 +89,10 @@ if (isset($_GET['cod_adm_users'])) {
          </div>
 
          <div class="form-group row">
-              <label class="form-group col-form-label-sm">Nível de Permissão:&nbsp;&nbsp;</label>
+              <label class="form-group col-form-label-sm">N&iacute;vel de Permiss&atilde;o:&nbsp;&nbsp;</label>
               <select class="form-control form-control-sm" name="permissao">
                   <option value="0" <?php if ($permissao == 0) echo "selected";?> >Administrador Geral do IBQUOTA</option>
-                  <option value="1"  <?php if ($permissao == 1) echo "selected";?> >Administrador de Impressão</option>
+                  <option value="1"  <?php if ($permissao == 1) echo "selected";?> >Administrador de Impress&atilde;o</option>
                   <option value="2"  <?php if ($permissao == 2) echo "selected";?> >Visualiza Relat&oacute;rio</option>
               </select>
          </div>
@@ -155,7 +155,7 @@ if ((isset($_POST['cod_adm_users'])) AND (isset($_POST['login']))) {
   $update_stmt->close();
 
   
-  echo "<div class=\"alert alert-success\" role=\"alert\">Usuario Administrador Alterado com Sucesso!</div><br>";
+  echo "<div class=\"alert alert-success\" role=\"alert\">Usu&aacute;rio Administrador Alterado com Sucesso!</div><br>";
   echo "<a class=\"btn btn-primary\" href=\"index.php\" role=\"button\" aria-expanded=\"false\">Voltar</a>";
 
 }
