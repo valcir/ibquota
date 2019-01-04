@@ -2,9 +2,9 @@ CREDITS - 2018-10-28
 ====================
 VERSION 3X:   
 
-   Romulo Brito de Farias / UFRN
-   Rafael Silveira Gomes / Cachoeiro de Itapemirim - ES
-   Emily Biele Ferreira (Layout GG)
+   Romulo Brito de Farias / UFRN 
+   Rafael Silveira Gomes / Cachoeiro de Itapemirim - ES 
+   Emily Biele Ferreira (Layout GG) 
    Allan Michel de Souza / Unicamp  
    Bruno Gomes Ximenes / Unicamp   
    
