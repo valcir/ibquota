@@ -54,7 +54,7 @@ if ($stmt = $mysqli->prepare("SELECT cod_usuario,usuario
 
 
 <center>
-  <h2><font color=#428bca>Usuarios</font></h2>
+  <h2><font color=#428bca>Usu&aacute;rios</font></h2>
 <br>
 
 <table width="500" border="0">
@@ -62,8 +62,8 @@ if ($stmt = $mysqli->prepare("SELECT cod_usuario,usuario
 
  <table class="table table-striped">
    <tr>
-    <th>Usuario</th>
-    <th align="right"><p align="right">Ações</p></th>
+    <th>Usu&aacute;rio</th>
+    <th align="right"><p align="right">A&ccedil;&otilde;es</p></th>
   </tr>
 
 <?php
@@ -79,11 +79,11 @@ if ($stmt = $mysqli->prepare("SELECT cod_usuario,usuario
       </button></a>
 
       <a href="usuario_editar.php<?php echo '?cod_usuario=' . $cod_usuario; ?>">
-        <button type="button" class="btn btn-info btn-sm" title="Editar Usuario">E</button>
+        <button type="button" class="btn btn-info btn-sm" title="Editar Usu&aacute;rio">E</button>
       </button></a>
 
       <a href="usuario_excluir.php<?php echo '?cod_usuario=' . $cod_usuario; ?>">
-        <button type="button" class="btn btn-danger btn-sm" title="Excluir Usuario">X</button>
+        <button type="button" class="btn btn-danger btn-sm" title="Excluir Usu&aacute;rio">X</button>
       </a>
 
     </td>
@@ -106,7 +106,7 @@ if ($stmt = $mysqli->prepare("SELECT cod_usuario,usuario
 
 <form  action="usuario_add.php" method="post">
   <div class="form-group">
-    <input type="text" class="form-control" placeholder="Nome do Usuario" name="usuario">
+    <input type="text" class="form-control" placeholder="Nome do Usu&aacute;rio" name="usuario">
   </div>
   <button type="submit" class="btn btn-primary">Cadastrar</button>
 </form><br>
