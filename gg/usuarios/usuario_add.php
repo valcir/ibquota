@@ -32,7 +32,7 @@ if (isset($_POST['usuario']) == false ) {
 
 
   <center><br>
-    <h2><font color=#428bca>Cadastro de Novo Usuario</font></h2>
+    <h2><font color=#428bca>Cadastro de Novo Usu&aacute;rio</font></h2>
   <br><br>
   <table border="0" width="500" align="center">
   <tr><td>
@@ -41,14 +41,14 @@ if (isset($_POST['usuario']) == false ) {
           <form action="<?php echo esc_url($_SERVER['PHP_SELF']); ?>" method="post">          
 
             <div class="form-group">
-              <label for="exampleInputPassword">Nome do Usuario:</label>
-              <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Nome do Usuario" name="usuario">
+              <label for="exampleInputPassword">Nome do Usu&aacute;rio:</label>
+              <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Nome do Usu&aacute;rio" name="usuario">
             </div>
 
             <center>
 
             <a class="btn btn-primary" href="index.php" role="button" aria-expanded="false">Voltar</a>&nbsp;&nbsp;
-             <button type="submit" class="btn btn-primary">Cadastrar Usuario</button>
+             <button type="submit" class="btn btn-primary">Cadastrar Usu&aacute;rio</button>
             </center>
             <br><br>
           </form>
@@ -89,7 +89,7 @@ $select_stmt->execute();
 $select_stmt->store_result();
 if ($select_stmt->num_rows > 0) {
     //grupo ja existe
-   echo "<div class=\"alert alert-danger\" role=\"alert\">O usuario <em>". $usuario ."</em> j&aacute; existe na Base de Dados.</div><br><br><center>";
+   echo "<div class=\"alert alert-danger\" role=\"alert\">O usu&aacute;rio <em>". $usuario ."</em> j&aacute; existe na Base de Dados.</div><br><br><center>";
    echo "<a class=\"btn btn-primary\" href=\"index.php\" role=\"button\" aria-expanded=\"false\">Voltar</a></center>";
    
    include '../includes/footer.php';
@@ -106,7 +106,7 @@ if ($insert_stmt = $mysqli->prepare("INSERT INTO usuarios (cod_usuario, usuario)
     }
     echo "<div class=\"alert alert-success\" role=\"alert\">Usuario <em>". $usuario ."</em> Cadastrado com Sucesso.</div><br><br><center>";
     echo "<a class=\"btn btn-primary\" href=\"index.php\" role=\"button\" aria-expanded=\"false\">Voltar</a>&nbsp;&nbsp;";
-    echo "<a class=\"btn btn-primary\" href=\"usuario_add.php\" role=\"button\" aria-expanded=\"false\">Novo Usuario</a>";
+    echo "<a class=\"btn btn-primary\" href=\"usuario_add.php\" role=\"button\" aria-expanded=\"false\">Novo Usu&aacute;rio</a>";
     echo "</center><br>";
     include '../includes/footer.php';
     exit();
