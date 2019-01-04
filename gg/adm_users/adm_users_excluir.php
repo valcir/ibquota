@@ -34,7 +34,7 @@ $cod_adm_users = trim($_GET['cod_adm_users']);
 // Não exclui adm principal
 if (cod_adm_users == 1) {
    include '../includes/header.php';
-   echo "<div class=\"alert alert-danger\" role=\"alert\">Não é possível excluir o usuário ADMIN</div>";
+   echo "<div class=\"alert alert-danger\" role=\"alert\">N&atilde;o &eacute; poss&iacute;vel excluir o usu&aacute;rio ADMIN</div>";
    include '../includes/footer.php';
    exit();
 }
