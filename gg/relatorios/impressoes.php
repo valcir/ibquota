@@ -50,7 +50,7 @@ if ($stmt = $mysqli->prepare("SELECT data_impressao,hora_impressao,job_id,impres
 
 ?>
 
-<center><h2><font color=#428bca>Impressoes</font></h2><br>
+<center><h2><font color=#428bca>Impress&otilde;es</font></h2><br>
    <table border="0" width="1000" align="center">
     <tr><td>
     <div class="panel panel-default">
@@ -60,11 +60,11 @@ if ($stmt = $mysqli->prepare("SELECT data_impressao,hora_impressao,job_id,impres
           <thead>
             <tr>
               <th scope="col">Job ID</th>
-              <th scope="col">Usuario</th>
+              <th scope="col">Usu&aacute;rio</th>
               <th scope="col">Impressora</th>
-              <th scope="col">Estacao</th>
+              <th scope="col">Esta&ccedil;&atilde;o</th>
               <th scope="col">Documento</th>
-              <th scope="col">Pagina</th>
+              <th scope="col">P&aacute;gina</th>
               <th scope="col">Status</th>
             </tr>
           </thead>
@@ -94,7 +94,7 @@ if ($stmt = $mysqli->prepare("SELECT data_impressao,hora_impressao,job_id,impres
       $sem_grupo = 0; 
    } 
    if ($sem_grupo == 1) {
-      echo "<tr><td colspan=\"7\"><i>Sem registro de Impressao</i></td></tr>";
+      echo "<tr><td colspan=\"7\"><i>Sem registro de Impress&otilde;o</i></td></tr>";
    } else {
       echo "<tr><td colspan=\"7\">";
       barra_de_paginas($p,$p_num_registros);
