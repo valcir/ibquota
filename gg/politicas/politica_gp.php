@@ -47,13 +47,15 @@ if ( isset($_GET['cod_politica_grupo']) && isset($_GET['cod_politica'])) {
     $select_stmt->bind_result($grupo);
     $select_stmt->fetch();
 
-    // Deleta Politica Quota Usuario
-    $deleta_stmt = $mysqli->prepare("DELETE FROM quota_usuario
-      WHERE cod_politica = ? AND grupo = ?");
-    $deleta_stmt->bind_param('is', $cod_politica, $grupo);
-    $deleta_stmt->execute();
-    $deleta_stmt->close();
-
+    if (strlen($grupo) > 0) {
+      // Deleta Politica Quota Usuario
+      $deleta_stmt = $mysqli->prepare("DELETE FROM quota_usuario
+        WHERE cod_politica = ? AND grupo = ?");
+      $deleta_stmt->bind_param('is', $cod_politica, $grupo);
+      $deleta_stmt->execute();
+      $deleta_stmt->close();
+    }
+ 
     // Deleta Grupo-Politica 
     $deleta_stmt = $mysqli->prepare("DELETE FROM politica_grupo
       WHERE cod_politica_grupo = ? AND cod_politica = ?");
