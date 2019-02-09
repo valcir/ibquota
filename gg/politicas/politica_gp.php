@@ -58,8 +58,8 @@ if ( isset($_GET['cod_politica_grupo']) && isset($_GET['cod_politica'])) {
  
     // Deleta Grupo-Politica 
     $deleta_stmt = $mysqli->prepare("DELETE FROM politica_grupo
-      WHERE cod_politica_grupo = ? AND cod_politica = ?");
-    $deleta_stmt->bind_param('ii', $cod_politica_grupo,$cod_politica);
+      WHERE grupo = ? AND cod_politica = ?");
+    $deleta_stmt->bind_param('si', $grupo,$cod_politica);
     $deleta_stmt->execute();
     $deleta_stmt->close();
            
