@@ -43,7 +43,7 @@ use DBD::mysql;
 use Net::LDAP;
 
 #Versao IBQUOTA
-my $VERSAO_IBQUOTA = "3.0";
+my $VERSAO_IBQUOTA = "3.1";
 
 # Data Bases Connect
 my $dsn = "DBI:mysql:database=$DBdatabase;host=$DBhost;port=$DBport";
@@ -118,9 +118,11 @@ my $quota_user = 0;
 my $name_log_file = "/tmp/ibquota3.log";
 sub log_in_file {
    my $mensagem = shift;
-   open(my $fh, '>>', $name_log_file);
-   print $fh "$mensagem \n";
-   close $fh;
+   if (length $mensagem > 0) {
+      open(my $fh, '>>', $name_log_file);
+      print $fh "$mensagem \n";
+      close $fh;
+   }
 }
 
 #TIRAR
@@ -566,7 +568,9 @@ if ( @ARGV < 4 || @ARGV > 6 ) {
 my $spoolfile = "";
 my $str_argvs = "  ARGV[0] = ". $ARGV[0] ."\n  ARGV[1] = ". $ARGV[1] ."\n  ARGV[2] = ". $ARGV[2];
 $str_argvs .= "  ARGV[3] = ". $ARGV[3] ."\n  ARGV[4] = ". $ARGV[4] ."\n  ARGV[5] = ". $ARGV[5];
-$str_argvs .= "  ARGV[6] = ". $ARGV[6];
+if (defined $ARGV[6] && length $ARGV[6] > 0) {
+   $str_argvs .= "  ARGV[6] = ". $ARGV[6];
+}
 
 log_ibquota_debug("" . $str_argvs);
 
