@@ -12,7 +12,7 @@
 
   
 <div class="alert bg-success" role="alert">
-  <b><a href="https://www.ib.unicamp.br/ibquota/">VERS&Atilde;O 3.0</a></b>
+  <b><a href="https://www.ib.unicamp.br/ibquota/">VERS&Atilde;O 3.2</a></b>
 </div>
  
  
