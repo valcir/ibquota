@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # IBQUOTA 3 - BACKEND CUPS
-# Versao: 28/Out/18
+# Versao: 3.2 20/Fev/19
 #
 # => Necessario REINICIAR o CUPS apos alterar este arquivo
 # => Restart CUPS after change this file
@@ -35,7 +35,7 @@ my $DBport=3306;
 ##
 
 use strict;
-#use POSIX qw(strftime); (use this???????)
+use POSIX qw(strftime);
 use File::Basename;
 use File::Copy;
 use Sys::Hostname;
@@ -43,7 +43,7 @@ use DBD::mysql;
 use Net::LDAP;
 
 #Versao IBQUOTA
-my $VERSAO_IBQUOTA = "3.1";
+my $VERSAO_IBQUOTA = "3.2";
 
 # Data Bases Connect
 my $dsn = "DBI:mysql:database=$DBdatabase;host=$DBhost;port=$DBport";
@@ -90,6 +90,8 @@ $DB->do($query) or do{
 # Backend-related variables: Should not be changed if working !
 my $backends_dir = dirname($0);
 my $me = basename($0);
+# Lockfile: Critical to prevent this script to bring down the server !
+my $lockfile = "/tmp/".$me.".lock";
 
 ##
 ## Variables
@@ -126,7 +128,7 @@ sub log_in_file {
 }
 
 #TIRAR
-log_in_file ("IBQUOTA STARTED!");
+#log_in_file ("IBQUOTA STARTED!");
 
 #
 # Log
@@ -381,10 +383,10 @@ sub count_pages {
       Log_printing(7);
       exit 5;
    } else {
-      return $total_pages;
+      return 0 + $total_pages;
    }
 
-   return $num_pages;
+   return 0 + $num_pages;
 }
 
 
@@ -452,9 +454,85 @@ sub Decrease_quota {
 ##
 
 if ( @ARGV == 0 ) {
-   #log_failure ("Cups backend called without argument!");
-   log_in_file ("Cups backend called without argument!");
-   exit 5;
+  # Evita Loop e travamento do servidor
+  # Ideia e Codigo copiados do PyKota e do Jasmine/CUPS
+  if (-e $lockfile){
+    log_in_file("Another instance of $me is already running... Bye !",
+                "(If not, manually remove '$lockfile',",
+                "and restart/reload Cups)");
+    exit 1;
+  }
+  open (LOCKFILE, ">".$lockfile) or die "ERROR: $me: Unable to create lockfile '$lockfile', exiting !";
+
+  log_ibquota_info("Reload: Polling backends.");
+  log_ibquota_debug(
+              "---> Started at ".strftime ("%a %b %e %H:%M:%S %Y", localtime),
+              "  Command line: $0",
+              "  Arguments: ".join("|", @ARGV),
+              "  I was called with 0 arguments, let's fool Cups !"
+  );
+
+  # Get the list of all backends from the Cups backends directory:
+  my @backends_list = glob($backends_dir.'/*');
+
+  # We gonna echo this list in the logfile, so:
+  log_ibquota_debug("  Candidate backends list:");
+
+  # Let's call each backend, filter output, and echo all on STDIN:
+
+  # This is the pattern that'll check the output of the backends,
+  # and extract the four fields:
+  my $motif = "^(\\S+)\\s(\\S+)\\s\"([^\"]+)\"\\s\"([^\"]+)\"\$";
+
+  foreach my $backend (@backends_list){
+    # Avoid calling ourselves, we are not in need of a brutal reset, are we ?
+    # In the same time, avoid calling non-executable files or dirs.
+    next if ($backend =~ /$0/ || ! -f $backend || ! -x $backend);   # /!\ TODO: Doublecheck this line so that it ALWAYS work !
+
+    # Echo the name of the backend to the logfile...
+    log_ibquota_debug("    - $backend");
+
+    # ...And execute the backend, feeding a list with its output.
+    ## TODO !!! : Security problem here, we shouldn't run any exe here before verifying
+    ## the owner and perms, as someone could have put a malware in the backend directory...
+    ## Well, in fact, this is not our problem, as if someone manages to write there, he has
+    ## already root access...
+    my @output = `$backend`;
+
+    # A given backend may manage many devices, thus outputing many lines:
+    # we process each line.
+    foreach my $ligne (@output){
+      # Check the line against the pattern, and extract the fields
+      # in the special variables $1, $2, $3 and $4
+      if ($ligne =~ $motif){
+        # Then we output what Cups expects, lightly modified so we appear
+        # in the device list when configuring a new printer: For example,
+        # a "socket" printer will appear as "ibquota3:socket://hostname:port"
+        print "$1 $me:$2 \"$3\" [$4 (Quota Managed)]\n";
+        # Don't forget the logfile: It's so hungry !
+        log_ibquota_debug("      $1 $me:$2 \"$3\" [$4 (Quota Managed)]");
+      }
+      # If the backend spited a line that doesn't fit our needs, ignore it,
+      # but mention it in the logs.
+      else {
+        log_ibquota_info("Invalid line returned by a backend: \"$ligne\"");
+      }
+    }
+  }
+
+  log_ibquota_debug("---> Ended at: ".strftime ("%a %b %e %H:%M:%S %Y", localtime));
+
+  # Remove the lock file...
+  close LOCKFILE or log_ibquota_info("Unable to close file '$lockfile'");
+  unlink $lockfile or log_ibquota_info("Unable to remove file '$lockfile'");
+
+  # Log success
+  log_ibquota_info("Reload successful.");
+
+  # Clean and exit
+  closelog();
+  exit 0;
+
 }
 
 if ( @ARGV == 1 ) {
@@ -546,12 +624,12 @@ if ( @ARGV == 1 ) {
          }
 
       }
-
       print("\n");
       exit 5;
    }
 
 }
+
 
 
 ##
@@ -560,18 +638,17 @@ if ( @ARGV == 1 ) {
 ##
 ## CUPS API says there must be an exact number of args (5 or 6)
 if ( @ARGV < 4 || @ARGV > 6 ) {
-   #log_failure ("Cups backend called with irregular number of arguments!");
-   log_in_file ("Cups backend called with irregular number of arguments!");
+   log_ibquota_info("Cups backend called with irregular number of arguments!");
    exit 5;
 }
 
 my $spoolfile = "";
+
 my $str_argvs = "  ARGV[0] = ". $ARGV[0] ."\n  ARGV[1] = ". $ARGV[1] ."\n  ARGV[2] = ". $ARGV[2];
 $str_argvs .= "  ARGV[3] = ". $ARGV[3] ."\n  ARGV[4] = ". $ARGV[4] ."\n  ARGV[5] = ". $ARGV[5];
 if (defined $ARGV[6] && length $ARGV[6] > 0) {
    $str_argvs .= "  ARGV[6] = ". $ARGV[6];
 }
-
 log_ibquota_debug("" . $str_argvs);
 
 ## if we have the processed print file on standard in then copies have already been made
@@ -579,39 +656,35 @@ log_ibquota_debug("" . $str_argvs);
 if ( @ARGV == 6 ) {
    $spoolfile = $ARGV[5];
    chomp $spoolfile;
-   # chomp $spoolfile;
-   # Temp file exist?
-   log_ibquota_debug("Called with 6 args, \$spoolfile is read from STDIN and the tempfile is $spoolfile");
-   if (! -e $spoolfile) {
-      log_ibquota_info("File $spoolfile not found!");
-      exit 5;
-   }
+   log_ibquota_debug("Called with 6 args, \$spoolfile is $spoolfile");
 }
 if ( @ARGV == 5 ) {
-   # Discover spoolfile
-   ### FALTA MONTAR
-       # $ENV{CUPS_DATADIR}
-
    my $tmpcmd = "/bin/mktemp </dev/null /tmp/print.XXXXXX";
    my $tmpfile = qx{$tmpcmd};
    chomp $tmpfile;
-   # TODO : This is not portable too !
    qx{cat > $tmpfile};
    $spoolfile = $tmpfile;
-
-
-   #my $path_job = substr $ENV{TMPDIR}, 0, ((length $ENV{TMPDIR}) - 3);
-   #   $path_job .= sprintf 'd%05d-001', $ARGV[0];
-   #log_ibquota_debug("Arq job= ". $path_job);
-   # $spoolfile = $path_job;
-
-   log_ibquota_debug("Called with 5 args, \$spoolfile is $spoolfile");
-   if ( ! -e $spoolfile ) {
-      log_ibquota_info("File $spoolfile not found!");
-      exit 5;
-   }
+   log_ibquota_debug("Called with 5 args, \$spoolfile is read from STDIN and the tempfile is $spoolfile");
 }
 
+# Arquivo de Impressao Existe?
+if (! -e $spoolfile) {
+    log_ibquota_info("File $spoolfile not found!");
+    exit 5;
+}
+
+# Extrair o próximo programa (backend):
+my $real_uri = $ENV{DEVICE_URI};
+$real_uri =~ s/^$me:(.*)/$1/;
+my $real_backend = $real_uri;
+$real_backend =~ s/^([^:\/]+)(.*|$)/$1/;
+log_ibquota_debug("  \$real_uri= $real_uri");
+log_ibquota_debug("  \$real_backend= $real_backend");
+# Set the env var DEVICE_URI for use by the real backend.
+# This seems mandatory for backends like 'smb' !
+$ENV{DEVICE_URI} = $real_uri;
+
+#Numero do Job
 $job_id = $ARGV[0];
 
 #TIRAR
@@ -632,6 +705,8 @@ $options = $ARGV[4];
 # Printer name
 $printer = $ENV{PRINTER};
 
+# Parametros para a Nova URI:
+my @args = ($real_uri, $job_id, $user, $title, $mycopies, $options, $spoolfile);
 
 # Hostname or IP client IPP
 my $sub_str = "job-originating-host-name"; # 25 chars
@@ -644,18 +719,17 @@ if ( $position_str_host != -1 ) {
    $hostname = $array_strings[0];
 }
 
-
 log_ibquota_info("New job[". $job_id ."] from ". $hostname ." to printer: ". $printer .". User is ". $user .".");
 
 
-# FALTA
+# Verificar se precisa forçar o formato do arquivo de impressao:
 # $ENV{CONTENT_TYPE} = Formato do arquivo (EX "application/postscript" )
 
 
 #
 # Page job counting
 #
-$pages = count_pages($spoolfile);
+$pages = 0 + count_pages($spoolfile);
 
 
 #
@@ -672,7 +746,7 @@ $sth = $DB->prepare($sql);
 # execute the query
 $sth->execute();
 
-log_ibquota_info("Numero de rows: ". $sth->rows);
+log_ibquota_debug("Numero de Politicas retornadas: ". $sth->rows);
 
 # Printer without Print Police
 if ( $sth->rows < 1 ) {
@@ -711,6 +785,10 @@ while (my @row = $sth->fetchrow_array()) {
                log_ibquota_debug("Usuario: ". $user ." tem quota: ". $quota_user);
                Decrease_quota($cod_politica,$user,$grupo,$pages,$quota_padrao);
             }
+            # Envia job para o Backend real
+            my $backend_cmd = $backends_dir."/".$real_backend;
+            log_ibquota_debug("  Calling backend: $backend_cmd ".join(" ", @args));
+            system $backend_cmd @args;
             Log_printing(1);
             exit 0;
          }
