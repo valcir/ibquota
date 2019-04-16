@@ -85,7 +85,7 @@ if (!$conn) {
 <?php
 
 if (ibquota_ldap_bind($conn)) {
-   echo "<span class=\"badge badge-success\">Success</span>";
+   echo "<span class=\"badge badge-success\">Sucesso</span>";
 } else {
    echo "<span class=\"badge badge-danger\">Falhou</span>";
 }
