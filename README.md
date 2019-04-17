@@ -13,6 +13,15 @@ Instalação
 
     $ sudo apt-get install apache2 build-essential cups pkpgcounter mysql-server php libdbd-mysql-perl libnet-ldap-perl php-ldap
 
+1.1 - """(APENAS se o pacote pkpgcounter não exister em sua distribuição, ex CentOS)""" Instalação manual do contador de páginas pkpgcounter:
+
+    $ cd /tmp
+    $ wget http://www.pykota.com/software/pkpgcounter/download/tarballs/pkpgcounter-3.50.tar.gz
+    $ tar -zxf pkpgcounter-3.50.tar.gz
+    $ cd pkpgcounter-3.50
+    $ python setup.py install
+
+
 2 - Download IBQUOTA 3 (versão em Desenvolvimento)
 
     $ wget https://github.com/valcir/ibquota/archive/master.zip
