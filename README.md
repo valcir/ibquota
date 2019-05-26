@@ -5,7 +5,7 @@
 AJUDE NO DESENVOLVIMENTO: Reporte erros ou sugestões!
 
     Versão 3.2: 20/fev/19
-    Versão 3.3: (Aguardando retorno dos usuarios) Previsao: 25/05/19 
+    Versão 3.3: (Aguardando retorno dos usuarios) 
 
 Instalação
 
