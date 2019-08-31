@@ -37,7 +37,7 @@ if ($num_stmt = $mysqli->prepare("SELECT count(*)
 
  
 // Busca impressoes no banco de dados 
-if ($stmt = $mysqli->prepare("SELECT data_impressao,hora_impressao,job_id,impressora,
+if ($stmt = $mysqli->prepare("SELECT DATE_FORMAT(data_impressao,'%d/%m/%y') ,hora_impressao,job_id,impressora,
               usuario,estacao, nome_documento, paginas, cod_politica, cod_status_impressao
       FROM impressoes
       Order by cod_impressoes DESC LIMIT ?, ?")) {
@@ -59,6 +59,8 @@ if ($stmt = $mysqli->prepare("SELECT data_impressao,hora_impressao,job_id,impres
         <table class="table table-hover table-sm">
           <thead>
             <tr>
+              <th scope="col">Data</th>
+              <th scope="col">Hora</th>
               <th scope="col">Job ID</th>
               <th scope="col">Usu&aacute;rio</th>
               <th scope="col">Impressora</th>
@@ -82,8 +84,10 @@ if ($stmt = $mysqli->prepare("SELECT data_impressao,hora_impressao,job_id,impres
       } else {
          echo "<tr class=\"bg-danger\">";
       }
-      echo "<td><span title=\" ". $hora_impressao ." ". $data_impressao ."\">$job_id</span></td>"; 
-      echo "<td><span title=\" ". $hora_impressao ." ". $data_impressao ."\"><b>$usuario</b></span></td>";
+      echo "<td>$data_impressao</td>";
+      echo "<td>$hora_impressao</td>";    
+      echo "<td>$job_id</td>"; 
+      echo "<td><b>$usuario</b></td>";
       echo "<td>$impressora</td>";
       echo "<td>$estacao</td>";
       echo "<td>$nome_documento</td>";
